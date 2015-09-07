@@ -1,0 +1,156 @@
+#! /usr/bin/python3
+# vim: et ts=4 sw=4
+# Copyright © 2015 Piotr Ożarowski <piotr@debian.org>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
+import logging
+import argparse
+import asyncio
+import sys
+from os import environ, getcwd, makedirs
+from os.path import exists, join
+from shutil import rmtree
+from pypi2deb import VERSION
+from pypi2deb.debianize import debianize
+from pypi2deb.pypi import get_pypi_info, parse_pypi_info, download
+from pypi2deb.tools import execute, unpack, parse_filename, pkg_name
+
+logging.basicConfig(format='%(levelname).1s: py2dsp '
+                           '%(module)s:%(lineno)d: %(message)s')
+log = logging.getLogger('py2dsp')
+DESCRIPTION = 'Python source package to Debian source package converter'
+
+
+def main(args):
+    log.debug('args: %s', args)
+    if not exists(args.root):
+        makedirs(args.root)
+    if exists(args.name):
+        fpath = args.name
+        fname = fpath.rsplit('/', 1)[-1]
+        parsed = parse_filename(fname)
+        version = parsed.get('version')
+        name = parsed.get('name') or args.name
+        ctx = yield from get_pypi_info(name)
+        ctx = parse_pypi_info(ctx)
+    else:  # download from PyPI
+        ctx = yield from get_pypi_info(args.name)
+        ctx = parse_pypi_info(ctx)
+        if not ctx:
+            log.error('invalid name: %s', args.name)
+            exit(1)
+        name = ctx['name']
+        version = ctx['version']
+        fname = yield from download(name, destdir=args.root)
+        fpath = join(args.root, fname)
+
+    ctx['root'] = args.root
+    src_name = ctx['src_name'] = pkg_name(name)
+    ctx['distribution'] = args.distribution
+    dirname = '{}-{}'.format(src_name, version)
+    dpath = unpack(fpath, args.root, dirname)
+
+    if args.dpmt or args.papt:
+        ctx['distribution'] = 'unstable'
+        ctx['debian_revision'] = '1'
+        ctx['message'] = 'Initial release (closes: #NNNNNN)'
+    if args.dpmt:
+        ctx['uploaders'] = 'Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>'
+        ctx['vcs_name'] = 'Svn'
+        ctx['vcs_src'] = 'svn://anonscm.debian.org/python-modules/packages/{}/trunk/'.format(src_name)
+        ctx['vcs_browser'] = 'http://anonscm.debian.org/viewvc/python-modules/packages/{}/trunk/'.format(src_name)
+    elif args.papt:
+        ctx['uploaders'] = 'Python Applications Packaging Team <python-apps-team@lists.alioth.debian.org>'
+        ctx['vcs_src_name'] = 'Svn'
+        ctx['vcs_src'] = 'svn://anonscm.debian.org/python-apps/packages/{}/trunk/'.format(src_name)
+        ctx['vcs_browser'] = 'http://anonscm.debian.org/viewvc/python-apps/packages/{}/trunk/'.format(src_name)
+
+    yield from debianize(dpath, ctx)
+    yield from execute(['dpkg-buildpackage', '-S', '-us', '-uc'], dpath)
+
+    if args.clean:
+        rmtree(dpath)
+
+
+if __name__ == '__main__':
+    usage = '%(prog)s NAME [OPTIONS]'
+    parser = argparse.ArgumentParser(usage=usage,
+                                     description=DESCRIPTION)
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        default=environ.get('PY2DSP_VERBOSE') == '1',
+                        help='turn verbose mode on')
+    parser.add_argument('-q', '--quiet', action='store_true',
+                        default=environ.get('PY2DSP_QUIET') == '1',
+                        help='be quiet')
+    parser.add_argument('--version', action='version',
+                        version='%(prog)s {}'.format(VERSION))
+
+    parser.add_argument('--root', action='store', metavar='DIR',
+                        default=environ.get('DESTDIR',
+                                            join(getcwd(), 'result')),
+                        help='destination directory [default: ./result]')
+    parser.add_argument('--clean', action='store_true',
+                        default=environ.get('PY2DSP_CLEAN', '0') == '1',
+                        help='remove name-version directory after creating source package')
+    parser.add_argument('--application', action='store_true',
+                        default=environ.get('PY2DSP_APPLICATION', '0') == '1',
+                        help='this is an application rather than module')
+
+    changelog = parser.add_argument_group('changelog', 'debian/changelog specific settings')
+    changelog.add_argument('--distribution', action='store',
+                           default=environ.get('PY2DSP_DISTRIBUTION', 'UNRELEASED'),
+                           help='targetted Debian suite')
+    changelog.add_argument('--revision', action='store',
+                           default=environ.get('PY2DSP_REVISION', '0~py2deb'),
+                           help='Debian changelog revision')
+    changelog.add_argument('-m', '--message', action='store',
+                           default=environ.get('PY2DSP_MESSAGE', 'converte0~py2deb'),
+                           help='Debian changelog message')
+
+    # hidden options
+    parser.add_argument('--dpmt', action='store_true',
+                        default=environ.get('PY2DSP_DPMT', '0') == '1',
+                        # help='generate Debian Python Modules Team specific data')
+                        help=argparse.SUPPRESS)
+    parser.add_argument('--papt', action='store_true',
+                        default=environ.get('PY2DSP_PAPT', '0') == '1',
+                        # help='generate Python Applications Packaging Team specific data')
+                        help=argparse.SUPPRESS)
+
+    parser.add_argument('name', default=None,
+                        help='Python source name or tarball')
+
+    args = parser.parse_args()
+
+    if args.verbose:
+        logging.getLogger('pypi2deb').setLevel(logging.DEBUG)
+        log.setLevel(logging.DEBUG)
+    elif args.quiet:
+        logging.getLogger('pypi2deb').setLevel(logging.ERROR)
+        log.setLevel(logging.ERROR)
+    else:
+        logging.getLogger('pypi2deb').setLevel(logging.INFO)
+        log.setLevel(logging.INFO)
+    log.debug('version: {}'.format(VERSION))
+    log.debug(sys.argv)
+
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main(args))
+    loop.close()

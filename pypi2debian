@@ -1,0 +1,290 @@
+#! /usr/bin/python3
+# vim: et ts=4 sw=4
+# Copyright © 2015 Piotr Ożarowski <piotr@debian.org>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
+import argparse
+import asyncio
+import logging
+import sys
+try:
+    from asyncio import JoinableQueue as Queue  # Python 3.4
+except ImportError:  # Python 3.5
+    from asyncio import Queue
+from os import environ, getcwd, makedirs
+from os.path import exists, join
+
+from pypi2deb import VERSION
+from pypi2deb.debianize import debianize
+from pypi2deb.pypi import list_packages
+from pypi2deb.pypi import get_pypi_info, parse_pypi_info, download
+from pypi2deb.tools import unpack, pkg_name, execute
+
+logging.basicConfig(format='%(levelname).1s: pypi2debian '
+                           '%(module)s:%(lineno)d: %(message)s')
+log = logging.getLogger('pypi2debian')
+DESCRIPTION = 'Python Package Index to Debian repository converter'
+
+
+class Converter:
+    def __init__(self, args, loop=None):
+        self.args = args
+        self.loop = loop or asyncio.get_event_loop()
+        self.queue = Queue(loop=self.loop)
+        self.build_src_queue = Queue(loop=self.loop)
+        self.build_bin_queue = Queue(loop=self.loop)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        if exc_type is None:
+            self.loop.run_until_complete(self.run())
+        # self.loop.close()
+
+    @asyncio.coroutine
+    def run(self):
+        stats_worker = asyncio.Task(self.stats_worker(), loop=self.loop)
+        workers = [asyncio.Task(self.worker(), loop=self.loop)
+                   for _ in range(self.args.jobs)]
+        build_src_workers = [asyncio.Task(self.build_src_worker(), loop=self.loop)
+                             for _ in range(self.args.src_jobs)]
+        build_bin_workers = [asyncio.Task(self.build_bin_worker(), loop=self.loop)
+                             for _ in range(self.args.bin_jobs)]
+        try:
+            yield from self.queue.join()
+            yield from self.build_src_queue.join()
+            yield from self.build_bin_queue.join()
+        finally:
+            stats_worker.cancel()
+            for w in workers:
+                w.cancel()
+            for w in build_src_workers:
+                w.cancel()
+            for w in build_bin_workers:
+                w.cancel()
+
+    def convert(self, name, version):
+        self.queue.put_nowait((name, version))
+
+    def build_src(self, name, version, ctx):
+        self.build_src_queue.put_nowait((name, version, ctx))
+
+    def build_bin(self, name, version, ctx):
+        self.build_bin_queue.put_nowait((name, version, ctx))
+
+    def stats_worker(self):
+        while True:
+            yield from asyncio.sleep(10)
+            log.info('* pending conversion jobs: %s, src jobs: %s, build jobs: %s',
+                     self.queue.qsize(), self.build_src_queue.qsize(),
+                     self.build_bin_queue.qsize())
+
+    @asyncio.coroutine
+    def worker(self):
+        args = self.args
+        while True:
+            name, version = yield from self.queue.get()
+            try:
+                try:
+                    ctx = yield from get_pypi_info(name, version)
+                    ctx = parse_pypi_info(ctx)
+                except Exception as err:
+                    log.error('%s %s: cannot load details from PyPI: %r', name, version, err)
+                    continue
+                if not ctx:
+                    log.error('%s %s: cannot find details on PyPI', name, version)
+                    continue
+                ctx['src_name'] = pkg_name(name)
+                ctx['debian_revision'] = '0~pypi2deb'
+
+                dsc_path = join(args.root, '{src_name}_{version}-{debian_revision}.dsc'.format(**ctx))
+                ctx['dsc'] = dsc_path  # could be used in build step
+                if exists(dsc_path):
+                    log.debug('%s %s: skipping - dsc file already exists', name, version)
+                    continue
+
+                if args.no_python2:
+                    ctx['interpreters'].discard('python')
+                if args.no_pypy:
+                    ctx['interpreters'].discard('pypy')
+                if args.pypy:
+                    ctx['interpreters'] = ctx['interpreters'] & {'pypy'}
+                if args.python3:
+                    ctx['interpreters'] = ctx['interpreters'] & {'python3'}
+                if not ctx['interpreters']:
+                    log.debug('%s %s: no matching interpreter is supported', name, version)
+                    continue
+
+                try:
+                    fname = yield from download(name, version, destdir=args.root)
+                except Exception as err:
+                    log.error('%s %s: cannot download from PyPI: %r', name, version, err)
+                    continue
+
+                fpath = join(args.root, fname)
+
+                ctx['root'] = args.root
+                dirname = '{}-{}'.format(ctx['src_name'], version)
+                try:
+                    dpath = unpack(fpath, args.root, dirname)
+                except Exception as err:
+                    log.error('%s %s: cannot unpack sources: %r', name, version, err)
+                    continue
+                ctx['src_dir'] = dpath
+
+                # debianize sources
+                try:
+                    yield from debianize(dpath, ctx)
+                except Exception as err:
+                    log.warn('%s %s: conversion failed with: %r', name, version, err)
+                    continue
+
+                # create Debian source package
+                if args.build_src_cmd:
+                    self.build_src(name, version, ctx)
+            except Exception as err:
+                log.error('conversion failure (%s %s)', name, version, exc_info=True)
+            finally:
+                self.queue.task_done()
+
+    @asyncio.coroutine
+    def build_src_worker(self):
+        args = self.args
+        while True:
+            name, version, ctx = yield from self.build_src_queue.get()
+            try:
+                command = args.build_src_cmd.format(**ctx)
+                log_path = join(args.root, '{src_name}_{version}-{debian_revision}_source.log'.format(**ctx))
+                res = yield from execute(command, ctx['src_dir'], log_output=log_path)
+                if res != 0:
+                    log.error('%s %s: creating source package failed with return code %d',
+                              name, version, res)
+                elif args.build_cmd:
+                    # build the package - separate queue, usually one build at a time
+                    self.build_bin(name, version, ctx)
+            except Exception as err:
+                log.error('%s %s: creating source package failed with: %r',
+                          name, version, err)
+            self.build_src_queue.task_done()
+
+    @asyncio.coroutine
+    def build_bin_worker(self):
+        args = self.args
+        while True:
+            name, version, ctx = yield from self.build_bin_queue.get()
+            try:
+                command = args.build_cmd.format(**ctx)
+                log_path = join(args.root, '{src_name}_{version}-{debian_revision}_build.log'.format(**ctx))
+                res = yield from execute(command, ctx['src_dir'], log_output=log_path)
+                if res != 0:
+                    log.error('%s %s: building binary failed with return code %d',
+                              name, version, res)
+            except Exception as err:
+                log.error('%s %s: building binary package failed with: %r',
+                          name, version, err, exc_info=True)
+            self.build_bin_queue.task_done()
+
+
+if __name__ == '__main__':
+    usage = '%(prog)s NAME [OPTIONS]'
+    parser = argparse.ArgumentParser(usage=usage,
+                                     description=DESCRIPTION)
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        default=environ.get('PYPI2DEB_VERBOSE') == '1',
+                        help='turn verbose mode on')
+    parser.add_argument('-q', '--quiet', action='store_true',
+                        default=environ.get('PYPI2DEB_QUIET') == '1',
+                        help='be quiet')
+    parser.add_argument('--version', action='version',
+                        version='%(prog)s {}'.format(VERSION))
+
+    parser.add_argument('--root', action='store', metavar='DIR',
+                        default=environ.get('DESTDIR',
+                                            join(getcwd(), 'result')),
+                        help='destination directory [default: ./result]')
+    parser.add_argument('--clean', action='store_true',
+                        default=environ.get('PY2DSP_CLEAN', '0') == '1',
+                        help='remove name-version directory after creating source package')
+
+    filters = parser.add_argument_group('filters')
+    filters.add_argument('-c', '--classifiers', action='append', metavar='TAG',
+                         default=['Operating System :: POSIX :: Linux'],
+                         help='tag used to select packages for conversion'
+                         ' (can be passed several times)')
+    filters.add_argument('--python3', action='store_true',
+                         default=environ.get('PYPI2DEB_PYTHON3') == '1',
+                         help='limit to Python 3.X packages only')
+    filters.add_argument('--no-python2', action='store_true',
+                         default=environ.get('PYPI2DEB_NO_PYTHON2') == '1',
+                         help='do not generate Python 2.X packages')
+    filters.add_argument('--pypy', action='store_true',
+                         default=environ.get('PYPI2DEB_PYPY') == '1',
+                         help='limit to PyPy packages only')
+    filters.add_argument('--no-pypy', action='store_true',
+                         default=environ.get('PYPI2DEB_NO_PYPY') == '1',
+                         help='do not generate pypy- packages')
+
+    commands = parser.add_argument_group('commands', 'override commands')
+    commands.add_argument('--build-src-cmd', action='store', metavar='COMMAND',
+                          help='command to build source package',
+                          default='dpkg-buildpackage -S -uc -us')
+    commands.add_argument('--build-cmd', action='store', metavar='COMMAND',
+                          help='build command, none by default')
+
+    jobs = parser.add_argument_group('jobs')
+    jobs.add_argument('-j', '--jobs', default=8, metavar='INT',
+                      help='number of conversion jobs to run simultaneously')
+    jobs.add_argument('--src-jobs', default=4, metavar='INT',
+                      help='number of source package build jobs to run simultaneously')
+    jobs.add_argument('--bin-jobs', default=1, metavar='INT',
+                      help='number of binary build jobs to run simultaneously')
+
+    args = parser.parse_args()
+
+    if args.verbose:
+        logging.getLogger('pypi2deb').setLevel(logging.DEBUG)
+        log.setLevel(logging.DEBUG)
+    elif args.quiet:
+        logging.getLogger('pypi2deb').setLevel(logging.ERROR)
+        log.setLevel(logging.ERROR)
+    else:
+        logging.getLogger('pypi2deb').setLevel(logging.INFO)
+        log.setLevel(logging.INFO)
+
+    if args.python3:
+        args.classifiers.append('Programming Language :: Python :: 3')
+    elif args.pypy:
+        args.classifiers.append('Programming Language :: Python :: Implementation :: PyPy')
+    if 'None' in args.classifiers:
+        args.classifiers = []
+
+    log.debug('version: {}'.format(VERSION))
+    log.debug(sys.argv)
+    log.debug('args: %s', args)
+
+    if not exists(args.root):
+        makedirs(args.root)
+
+    packages = list_packages(args.classifiers)
+
+    with Converter(args) as converter:
+        for name, version in packages:
+            converter.convert(name, version)

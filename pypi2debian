@@ -286,5 +286,5 @@ if __name__ == '__main__':
     packages = list_packages(args.classifiers)
 
     with Converter(args) as converter:
-        for name, version in packages:
+        for name, version in packages.items():
             converter.convert(name, version)

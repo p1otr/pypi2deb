@@ -309,8 +309,8 @@ def copyright(dpath, ctx, env):
                 continue
             with open(join(dpath, fn), 'r') as fp:
                 for line in fp:
-                    line = line.strip()
-                    if not line:
+                    line = line.strip('\n')
+                    if not line.strip():
                         license.append(' .')
                     else:
                         license.append(' ' + line)

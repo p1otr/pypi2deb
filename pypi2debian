@@ -204,7 +204,7 @@ class Converter:
 
 
 if __name__ == '__main__':
-    usage = '%(prog)s NAME [OPTIONS]'
+    usage = '%(prog)s [OPTIONS]'
     parser = argparse.ArgumentParser(usage=usage,
                                      description=DESCRIPTION)
     parser.add_argument('-v', '--verbose', action='store_true',

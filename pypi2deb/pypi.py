@@ -79,8 +79,12 @@ def parse_pypi_info(data):
         result['requires'] = info['requires']
 
     summary = info['summary'].replace('  ', ' ')
-    if summary.lower().startswith('a '):
-        summary = summary[2:]
+    prefix, rest = summary.split(maxsplit=1)
+    prefix = prefix.lower()
+    if prefix in {'a', 'an', 'the'}:
+        summary = rest
+    if summary.endswith('.'):
+        summary = summary[:-1]
     result['summary'] = summary
 
     classifiers = data['info']['classifiers']

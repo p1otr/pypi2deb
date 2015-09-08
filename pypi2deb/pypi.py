@@ -86,9 +86,14 @@ def parse_pypi_info(data):
     classifiers = data['info']['classifiers']
     result['interpreters'] = set()
     if 'Programming Language :: Python' in classifiers:
+        # TODO: some projects use this to mark both Python 2.X and 3.X,
+        # find a way to make sure it's 2.X only
         result['interpreters'].add('python')
-    if 'Programming Language :: Python :: 3' in classifiers:
-        result['interpreters'].add('python3')
+    for i in classifiers:
+        if i.startswith('Programming Language :: Python :: 3'):
+            result['interpreters'].add('python3')
+        elif i.startswith('Programming Language :: Python :: 2'):
+            result['interpreters'].add('python')
     if 'Programming Language :: Python :: Implementation :: PyPy' in classifiers:
         result['interpreters'].add('pypy')
 

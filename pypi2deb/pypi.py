@@ -48,7 +48,11 @@ def get_pypi_info(name, version=None):
     except Exception as err:
         log.error('invalid project name: {} ({})'.format(name, err))
     else:
-        result = yield from response.json()
+        try:
+            result = yield from response.json()
+        except Exception as err:
+            log.warn('cannot download %s %s details from PyPI: %r', name, version, err)
+            return
         return result
 
 

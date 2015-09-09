@@ -25,7 +25,7 @@ import argparse
 import asyncio
 import sys
 from os import environ, getcwd, makedirs
-from os.path import exists, join
+from os.path import abspath, exists, isdir, join, split
 from shutil import rmtree
 from pypi2deb import VERSION
 from pypi2deb.debianize import debianize
@@ -42,9 +42,9 @@ def main(args):
     log.debug('args: %s', args)
     if not exists(args.root):
         makedirs(args.root)
-    if exists(args.name):
-        fpath = args.name
-        fname = fpath.rsplit('/', 1)[-1]
+    if exists(args.name):  # file or dir
+        fpath = abspath(args.name)
+        fname = fpath.rstrip('/').rsplit('/', 1)[-1]
         parsed = parse_filename(fname)
         version = parsed.get('version')
         name = parsed.get('name') or args.name
@@ -64,8 +64,11 @@ def main(args):
     ctx['root'] = args.root
     src_name = ctx['src_name'] = pkg_name(name)
     ctx['distribution'] = args.distribution
-    dirname = '{}-{}'.format(src_name, version)
-    dpath = unpack(fpath, args.root, dirname)
+    if isdir(fpath):
+        dpath = fpath
+    else:
+        dirname = '{}-{}'.format(src_name, version)
+        dpath = unpack(fpath, args.root, dirname)
 
     if args.dpmt or args.papt:
         ctx['distribution'] = 'unstable'

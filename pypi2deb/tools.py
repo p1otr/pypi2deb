@@ -32,12 +32,14 @@ from dhpython.pydist import load, safe_name
 
 FILENAME_RE = re.compile(r'''
     (?:.*/)?
-    (?P<name>[a-zA-Z].*)
+    (?P<name>[a-zA-Z-].*)
     [-_]
-    (?P<version>[0-9][A-Za-z0-9-.]*?)
-    \.
-    (?:orig\.)?
-    (?P<extension>(?:tar(?:\.[a-z0-9]+)?)|(?:zip))
+    (?P<version>[0-9][A-Za-z0-9\-.+]*?)
+    (?:
+        \.
+        (?:orig\.)?
+        (?P<extension>(?:tar(?:\.[a-z0-9]+)?)|(?:zip))
+    )?$
 ''', re.VERBOSE)
 log = logging.getLogger('pypi2deb')
 

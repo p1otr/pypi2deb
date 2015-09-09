@@ -71,14 +71,13 @@ def main(args):
         ctx['distribution'] = 'unstable'
         ctx['debian_revision'] = '1'
         ctx['message'] = 'Initial release (closes: #NNNNNN)'
+        ctx['vcs_name'] = 'Svn'
     if args.dpmt:
         ctx['uploaders'] = 'Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>'
-        ctx['vcs_name'] = 'Svn'
         ctx['vcs_src'] = 'svn://anonscm.debian.org/python-modules/packages/{}/trunk/'.format(src_name)
         ctx['vcs_browser'] = 'http://anonscm.debian.org/viewvc/python-modules/packages/{}/trunk/'.format(src_name)
     elif args.papt:
         ctx['uploaders'] = 'Python Applications Packaging Team <python-apps-team@lists.alioth.debian.org>'
-        ctx['vcs_src_name'] = 'Svn'
         ctx['vcs_src'] = 'svn://anonscm.debian.org/python-apps/packages/{}/trunk/'.format(src_name)
         ctx['vcs_browser'] = 'http://anonscm.debian.org/viewvc/python-apps/packages/{}/trunk/'.format(src_name)
 

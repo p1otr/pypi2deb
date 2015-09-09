@@ -96,6 +96,9 @@ def parse_pypi_info(data):
             result['interpreters'].add('python')
     if 'Programming Language :: Python :: Implementation :: PyPy' in classifiers:
         result['interpreters'].add('pypy')
+    if not result['interpreters']:
+        # assume it's Python 2.X only
+        result['interpreters'].add('python')
 
     return result
 

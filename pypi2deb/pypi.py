@@ -79,10 +79,15 @@ def parse_pypi_info(data):
         result['requires'] = info['requires']
 
     summary = info['summary'].replace('  ', ' ')
-    prefix, rest = summary.split(maxsplit=1)
-    prefix = prefix.lower()
-    if prefix in {'a', 'an', 'the'}:
-        summary = rest
+    unwanted_prefixes = {'a', 'an', 'the', 'is', result['name'].lower()}
+    while True:
+        if ' ' not in summary:
+            break
+        prefix, rest = summary.split(maxsplit=1)
+        if prefix.lower() in unwanted_prefixes:
+            summary = rest
+        else:
+            break
     if summary.endswith('.'):
         summary = summary[:-1]
     result['summary'] = summary

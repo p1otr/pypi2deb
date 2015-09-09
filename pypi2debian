@@ -63,11 +63,11 @@ class Converter:
     def run(self):
         stats_worker = asyncio.Task(self.stats_worker(), loop=self.loop)
         workers = [asyncio.Task(self.worker(), loop=self.loop)
-                   for _ in range(self.args.jobs)]
+                   for _ in range(int(self.args.jobs))]
         build_src_workers = [asyncio.Task(self.build_src_worker(), loop=self.loop)
-                             for _ in range(self.args.src_jobs)]
+                             for _ in range(int(self.args.src_jobs))]
         build_bin_workers = [asyncio.Task(self.build_bin_worker(), loop=self.loop)
-                             for _ in range(self.args.bin_jobs)]
+                             for _ in range(int(self.args.bin_jobs))]
         try:
             yield from self.queue.join()
             yield from self.build_src_queue.join()

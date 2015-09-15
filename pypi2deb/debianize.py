@@ -174,7 +174,7 @@ def control(dpath, ctx, env):
         if not line.strip():
             desc.append(' .')
         else:
-            if line.startswith(('* ', '>>> ', '... ',  '.. ', '$ ')) \
+            if line.startswith(('* ', '>>> ', '... ', '.. ', '$ ')) \
                or code_line or line == '...':
                 if line.startswith('>>> '):
                     # next line should get extra space char as well
@@ -272,7 +272,7 @@ def changelog(dpath, ctx, env):
                 log.debug('changelog doesn\'t need an update')
                 return
             else:
-                yield from execute(['dch',  '--force-distribution', '--distribution', distribution,
+                yield from execute(['dch', '--force-distribution', '--distribution', distribution,
                                     '--newversion', version, '-m', change], cwd=dpath)
         return
 

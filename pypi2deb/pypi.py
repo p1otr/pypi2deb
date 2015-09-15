@@ -167,7 +167,7 @@ def list_packages(classifiers=None):
         packages = client.list_packages()
         packages = dict.fromkeys(packages)
     else:
-        # packages =  yield from client.browse(classifiers)
+        # packages = yield from client.browse(classifiers)
         packages = client.browse(classifiers)
         # browse returns all versions, use the latest one only
         # TODO: use LooseVersion

@@ -22,12 +22,12 @@ features
 examples
 ~~~~~~~~
 
-* ``py2dsp jinja2`` will download, unpack and debianize jinja2 in ./result/jinja2-2.9/
+* ``py2dsp jinja2`` will download, unpack and debianize jinja2 in ./result/jinja2-2.8/
 * ``py2dsp jinja2-2.8.tar.gz`` will unpack and debianize jinja2 in ./result/jinja2-2.8/
 * ``py2dsp ./result/jinja2-2.8/`` will debianize Jinja2 in provided directory
 
 if debian/changelog didn't exist, above commands will also create
-mako_1.0.2-0~py2deb.mail file with ITP (intend to package) template
+jinja2_2.8-0~py2deb.mail file with ITP (intend to package) template
 
 * ``pypi2debian`` will convert PyPI packages to Debian source packages in ./result directory
 * ``pypi2debian --build-cmd "sbuild -c unstable"`` as above, but will also try

@@ -1,11 +1,15 @@
 * documentation
+* tests
 * support settings from stdeb.cfg configuration file
 * 'Environment :: X11 Applications' or 'Intended Audience :: End Users/Desktop' → private module
 * --dput-cmd
 * generate result/build.sh if --build-cmd not set
 * generate debdiff if .dsc or .changes files are available
 * convert upstream version (alpha → ~alpha, etc.)
+* generate autopkgtest (DEP-8)
 * use aioredis to cache coroutines
+* --application (install to private dir, do not prefix binary package with interpreter name, etc.)
+* point mk-origtargz to --copyright-file if available in overrides
 
 debian/copyright
 ----------------

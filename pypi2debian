@@ -226,8 +226,7 @@ if __name__ == '__main__':
 
     filters = parser.add_argument_group('filters')
     filters.add_argument('-c', '--classifiers', action='append', metavar='TAG',
-                         default=['Operating System :: POSIX :: Linux'],
-                         help='tag used to select packages for conversion'
+                         default=[], help='tag used to select packages for conversion'
                          ' (can be passed several times)')
     filters.add_argument('--python3', action='store_true',
                          default=environ.get('PYPI2DEB_PYTHON3') == '1',
@@ -273,8 +272,6 @@ if __name__ == '__main__':
         args.classifiers.append('Programming Language :: Python :: 3')
     elif args.pypy:
         args.classifiers.append('Programming Language :: Python :: Implementation :: PyPy')
-    if 'None' in args.classifiers:
-        args.classifiers = []
 
     log.debug('version: {}'.format(VERSION))
     log.debug(sys.argv)

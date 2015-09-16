@@ -152,7 +152,7 @@ class Converter:
 
                 # debianize sources
                 try:
-                    yield from debianize(dpath, ctx)
+                    yield from debianize(dpath, ctx, args.profile)
                 except Exception as err:
                     log.warn('%s %s: conversion failed with: %r', name, version, err)
                     continue
@@ -223,6 +223,9 @@ if __name__ == '__main__':
     parser.add_argument('--clean', action='store_true',
                         default=environ.get('PY2DSP_CLEAN', '0') == '1',
                         help='remove name-version directory after creating source package')
+
+    parser.add_argument('--profile', action='store',
+                        help='load default values from profile.json file (if available)')
 
     filters = parser.add_argument_group('filters')
     filters.add_argument('-c', '--classifiers', action='append', metavar='TAG',

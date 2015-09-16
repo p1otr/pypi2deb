@@ -1,0 +1,7 @@
+{"debian_revision": "1",
+"distribution": "unstable",
+"message": "Initial release (closes: #NNNNNN)",
+"uploaders": "Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>",
+"vcs_browser": "http://anonscm.debian.org/viewvc/python-modules/packages/{src_name}/trunk/",
+"vcs_name": "Svn",
+"vcs_src": "svn://anonscm.debian.org/python-modules/packages/{src_name}/trunk/"}

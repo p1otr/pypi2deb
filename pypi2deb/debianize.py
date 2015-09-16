@@ -57,7 +57,7 @@ def _copy_static_files(src_dir, debian_dir):
                 copy(join(root, fn), join(dst_dir, fn))
 
 
-def debianize(dpath, ctx):
+def debianize(dpath, ctx, profile=None):
     update_ctx(dpath, ctx)
 
     setupcfg_fpath = join(dpath, 'setup.cfg')
@@ -67,10 +67,19 @@ def debianize(dpath, ctx):
         if 'py2dsp' in upstream_cfg:
             ctx.update(upstream_cfg['py2dsp'].items())
 
+    profile_fpath = join(OVERRIDES_PATH, profile + '.json')
+    if exists(profile_fpath):
+        with open(profile_fpath) as fp:
+            ctx.update(load(fp))
+
     override_fpath = join(OVERRIDES_PATH, ctx['name'].lower(), 'ctx.json')
     if exists(override_fpath):
         with open(override_fpath) as fp:
             ctx.update(load(fp))
+
+    for key in ('vcs_src', 'vcs_browser'):
+        if key in ctx:
+            ctx[key] = ctx[key].format(**ctx)
 
     # copy static files
     debian_dir = join(dpath, 'debian')

@@ -70,21 +70,7 @@ def main(args):
         dirname = '{}-{}'.format(src_name, version)
         dpath = unpack(fpath, args.root, dirname)
 
-    if args.dpmt or args.papt:
-        ctx['distribution'] = 'unstable'
-        ctx['debian_revision'] = '1'
-        ctx['message'] = 'Initial release (closes: #NNNNNN)'
-        ctx['vcs_name'] = 'Svn'
-    if args.dpmt:
-        ctx['uploaders'] = 'Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>'
-        ctx['vcs_src'] = 'svn://anonscm.debian.org/python-modules/packages/{}/trunk/'.format(src_name)
-        ctx['vcs_browser'] = 'http://anonscm.debian.org/viewvc/python-modules/packages/{}/trunk/'.format(src_name)
-    elif args.papt:
-        ctx['uploaders'] = 'Python Applications Packaging Team <python-apps-team@lists.alioth.debian.org>'
-        ctx['vcs_src'] = 'svn://anonscm.debian.org/python-apps/packages/{}/trunk/'.format(src_name)
-        ctx['vcs_browser'] = 'http://anonscm.debian.org/viewvc/python-apps/packages/{}/trunk/'.format(src_name)
-
-    yield from debianize(dpath, ctx)
+    yield from debianize(dpath, ctx, args.profile)
     yield from execute(['dpkg-buildpackage', '-S', '-us', '-uc'], dpath)
 
     if args.clean:
@@ -126,15 +112,8 @@ if __name__ == '__main__':
                            default=environ.get('PY2DSP_MESSAGE', 'converte0~py2deb'),
                            help='Debian changelog message')
 
-    # hidden options
-    parser.add_argument('--dpmt', action='store_true',
-                        default=environ.get('PY2DSP_DPMT', '0') == '1',
-                        # help='generate Debian Python Modules Team specific data')
-                        help=argparse.SUPPRESS)
-    parser.add_argument('--papt', action='store_true',
-                        default=environ.get('PY2DSP_PAPT', '0') == '1',
-                        # help='generate Python Applications Packaging Team specific data')
-                        help=argparse.SUPPRESS)
+    parser.add_argument('--profile', action='store',
+                        help='load default values from profile.json file (if available)')
 
     parser.add_argument('name', default=None,
                         help='Python source name or tarball')

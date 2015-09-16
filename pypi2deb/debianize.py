@@ -67,10 +67,11 @@ def debianize(dpath, ctx, profile=None):
         if 'py2dsp' in upstream_cfg:
             ctx.update(upstream_cfg['py2dsp'].items())
 
-    profile_fpath = join(OVERRIDES_PATH, profile + '.json')
-    if exists(profile_fpath):
-        with open(profile_fpath) as fp:
-            ctx.update(load(fp))
+    if profile:
+        profile_fpath = join(OVERRIDES_PATH, profile + '.json')
+        if exists(profile_fpath):
+            with open(profile_fpath) as fp:
+                ctx.update(load(fp))
 
     override_fpath = join(OVERRIDES_PATH, ctx['name'].lower(), 'ctx.json')
     if exists(override_fpath):

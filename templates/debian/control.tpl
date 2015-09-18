@@ -15,7 +15,7 @@ Vcs-{{vcs_name}}: {{vcs_src}}{% endif %}
 {%- if vcs_browser %}
 Vcs-Browser: {{vcs_browser}}{% endif %}
 {%- if 'python' in interpreters %}
-  
+
 Package: python-{{src_name}}
 Architecture: {{binary_arch}}
 Depends: ${misc:Depends}, ${python:Depends},{% if binary_arch == 'any' %} ${shlibs:Depends},{% endif %}
@@ -24,7 +24,6 @@ Depends: ${misc:Depends}, ${python:Depends},{% if binary_arch == 'any' %} ${shli
 Recommends: ${python:Recommends}
 Suggests: ${python:Suggests}
 XB-Python-Egg-Name: {{name}}
-XB-Python-Egg-Version: {{version}}
 Description: {{short_desc}} - Python 2.X
 {{long_desc}}{% endif %}
 {%- if 'python3' in interpreters %}
@@ -37,7 +36,6 @@ Depends: ${misc:Depends}, ${python3:Depends},{% if binary_arch == 'any' %} ${shl
 Recommends: ${python3:Recommends}
 Suggests: ${python3:Suggests}
 XB-Python-Egg-Name: {{name}}
-XB-Python-Egg-Version: {{version}}
 Description: {{short_desc}}
 {{long_desc}}{% endif %}
 {%- if 'pypy' in interpreters %}
@@ -50,7 +48,6 @@ Depends: ${misc:Depends}, ${pypy:Depends},{% if binary_arch == 'any' %} ${shlibs
 Recommends: ${pypy:Recommends}
 Suggests: ${pypy:Suggests}
 XB-Python-Egg-Name: {{name}}
-XB-Python-Egg-Version: {{version}}
 Description: {{short_desc}}
 {{long_desc}}{% endif %}
 {%- if docs and 'sphinx_dir' in docs %}

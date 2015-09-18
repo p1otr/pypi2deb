@@ -123,7 +123,9 @@ def pkg_name(name):
     if name in names:
         return names[name]
     result = name.lower().replace('-python', '').replace('python-', '')
-    result = re.sub('[^a-z0-9-]', '-', result)
+    if result.endswith('.py'):
+        result = result[:-3]
+    result = re.sub('[^a-z0-9.-]', '-', result)
     return result
 
 

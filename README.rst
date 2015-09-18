@@ -76,6 +76,7 @@ ctx values
 * `distribution` - Debian's suite
 * `email` - maintainer's email
 * `exports` - variables exported in ``debian/rules``
+* `homepage` - project's homepage
 * `interpreters` - supported Python interpreters (python, python3, pypy)
 * `license` - license's full text
 * `license_name` - license name
@@ -83,6 +84,10 @@ ctx values
 * `name` - upstream project name
 * `src_name` - debianized upstream project name
 * `summary` - package's short description
+* `uploaders` - co-maintainers of the package
+* `vcs_browser` - URL to web-browsable copy of the Version Control System repository
+* `vcs_name` - VCS name, f.e. Git, Svn, etc.
+* `vcs_src` -  location of the Version Control System
 * `version` - upstream version
 * `with` - list of dh's ``--with`` extensions
 * `docs`

@@ -82,7 +82,7 @@ def debianize(dpath, ctx, profile=None):
         with open(override_fpath) as fp:
             ctx.update(load(fp))
 
-    for key in ('vcs_src', 'vcs_browser'):
+    for key in ('vcs_src', 'vcs_browser', 'uploaders'):
         if key in ctx:
             ctx[key] = ctx[key].format(**ctx)
 
@@ -114,6 +114,8 @@ def update_ctx(dpath, ctx):
     ctx.setdefault('exports', {})
     ctx.setdefault('build_depends', set())
     maintainer, email = get_maintainer()
+    ctx['creator'] = maintainer
+    ctx['creator_email'] = email
     if 'maintainer' not in ctx:
         ctx['maintainer'] = maintainer
     if 'email' not in ctx:
@@ -298,7 +300,7 @@ def changelog(dpath, ctx, env):
                         version=Version(version),
                         distributions=distribution,
                         urgency='low',
-                        author='{} <{}>'.format(*get_maintainer()),
+                        author='{} <{}>'.format(ctx['creator'], ctx['creator_email']),
                         date=now.strftime('%a, %d %b %Y %H:%M:%S +0000'))
     changelog.add_change('')
     changelog.add_change('  * {}'.format(change))
@@ -311,7 +313,7 @@ def changelog(dpath, ctx, env):
 
 @_render_template
 def copyright(dpath, ctx, env):
-    ctx['deb_copyright'] = "2015 © {} <{}>".format(*get_maintainer())
+    ctx['deb_copyright'] = "2015 © {} <{}>".format(ctx['creator'], ctx['creator_email'])
     ctx['deb_license_name'] = ctx['license_name']
 
     if exists('/usr/share/common-licenses/{}'.format(ctx['license_name'])):

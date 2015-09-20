@@ -26,6 +26,8 @@ TEMPLATES_PATH = environ.get('PYPI2DEB_TEMPLATES_PATH',
                              abspath(join(dirname(__file__), '..', 'templates')))
 OVERRIDES_PATH = environ.get('PYPI2DEB_OVERRIDES_PATH',
                              abspath(join(dirname(__file__), '..', 'overrides')))
+PROFILES_PATH = environ.get('PYPI2DEB_PROFILES_PATH',
+                            abspath(join(dirname(__file__), '..', 'profiles')))
 VERSION = '0.20150816'
 # Add path to dh-python's private library
 # (yeah, it's not stable enough to make it public one, fortunatly

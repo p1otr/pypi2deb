@@ -25,7 +25,7 @@ from os import listdir, makedirs, walk
 from os.path import exists, join
 from shutil import copy
 
-from pypi2deb import VERSION, TEMPLATES_PATH, OVERRIDES_PATH
+from pypi2deb import VERSION, OVERRIDES_PATH, PROFILES_PATH, TEMPLATES_PATH
 from pypi2deb.tools import execute
 
 from jinja2 import Environment, FileSystemLoader
@@ -72,7 +72,7 @@ def debianize(dpath, ctx, profile=None):
             with open(profile) as fp:
                 ctx.update(load(fp))
         else:
-            profile_fpath = join(OVERRIDES_PATH, profile + '.json')
+            profile_fpath = join(PROFILES_PATH, profile, 'ctx.json')
             if exists(profile_fpath):
                 with open(profile_fpath) as fp:
                     ctx.update(load(fp))
@@ -92,6 +92,8 @@ def debianize(dpath, ctx, profile=None):
     override_dpath = join(override_path, 'debian')
     _copy_static_files(override_dpath, debian_dir)
     _copy_static_files(join(TEMPLATES_PATH, 'debian'), debian_dir)
+    if profile:
+        _copy_static_files(join(PROFILES_PATH, profile, 'debian'), debian_dir)
 
     env = Environment(loader=FileSystemLoader([dpath, override_path,
                                                TEMPLATES_PATH]))

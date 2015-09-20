@@ -1,4 +1,4 @@
-From: {{maintainer}} <{{email}}>
+From: {{creator}} <{{creator_email}}>
 To: Debian Bug Tracking System <submit@bugs.debian.org>
 Subject: ITP: {{src_name}} -- {{short_desc}}
 

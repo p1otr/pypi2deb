@@ -1,0 +1,9 @@
+{"debian_revision": "1",
+"distribution": "unstable",
+"message": "Initial release (closes: #NNNNNN)",
+"maintainer": "PKG OpenStack",
+"email": "openstack-devel@lists.alioth.debian.org",
+"uploaders": "{creator} <{creator_email}>", 
+"vcs_browser": "http://anonscm.debian.org/gitweb/?p=openstack/{src_name}.git",
+"vcs_name": "Git",
+"vcs_src": "git://anonscm.debian.org/openstack/{src_name}.git"}

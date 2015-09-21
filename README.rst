@@ -63,24 +63,23 @@ env. variables.
 
 ctx values
 ----------
-* `author` - upstream author's name
-* `author_email` - upstream author's email
+* `author` - upstream author's name and email
 * `binary_arch` - binary package's architecture
 * `build_depends` - build dependencies
 * `clean_files` - files to remove in clean step
 * `copyright` - upstream copyrights (one line)
+* `creator` - name and email used in changelog and copyright files
 * `deb_copyright` - Debian packaging copyrights 
 * `deb_license_name` - Debian packaging license name
 * `debian_revision` - 0~pypi2deb by default
 * `description` - project's raw description
 * `distribution` - Debian's suite
-* `email` - maintainer's email
 * `exports` - variables exported in ``debian/rules``
 * `homepage` - project's homepage
 * `interpreters` - supported Python interpreters (python, python3, pypy)
 * `license` - license's full text
 * `license_name` - license name
-* `maintainer` - maintainer's full name
+* `maintainer` - maintainer's full name and email
 * `name` - upstream project name
 * `src_name` - debianized upstream project name
 * `summary` - package's short description

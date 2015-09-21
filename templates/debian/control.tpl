@@ -1,7 +1,7 @@
 Source: {{src_name}}
 Section: python
 Priority: optional
-Maintainer: {{maintainer}} <{{email}}>
+Maintainer: {{maintainer}}
 {%- if uploaders %}
 Uploaders: {{uploaders}}{% endif %}
 Build-Depends: debhelper (>= 9), dh-python,

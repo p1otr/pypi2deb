@@ -114,12 +114,9 @@ def update_ctx(dpath, ctx):
     ctx.setdefault('exports', {})
     ctx.setdefault('build_depends', set())
     maintainer, email = get_maintainer()
-    ctx['creator'] = maintainer
-    ctx['creator_email'] = email
+    ctx['creator'] = '{} <{}>'.format(maintainer, email)
     if 'maintainer' not in ctx:
-        ctx['maintainer'] = maintainer
-    if 'email' not in ctx:
-        ctx['email'] = email
+        ctx['maintainer'] = '{} <{}>'.format(maintainer, email)
     if 'debian_revision' not in ctx:
         ctx['debian_revision'] = '0~pypi2deb'
 
@@ -300,7 +297,7 @@ def changelog(dpath, ctx, env):
                         version=Version(version),
                         distributions=distribution,
                         urgency='low',
-                        author='{} <{}>'.format(ctx['creator'], ctx['creator_email']),
+                        author=ctx['creator'],
                         date=now.strftime('%a, %d %b %Y %H:%M:%S +0000'))
     changelog.add_change('')
     changelog.add_change('  * {}'.format(change))
@@ -313,7 +310,7 @@ def changelog(dpath, ctx, env):
 
 @_render_template
 def copyright(dpath, ctx, env):
-    ctx['deb_copyright'] = "2015 © {} <{}>".format(ctx['creator'], ctx['creator_email'])
+    ctx['deb_copyright'] = "2015 © {}".format(ctx['creator'])
     ctx['deb_license_name'] = ctx['license_name']
 
     if exists('/usr/share/common-licenses/{}'.format(ctx['license_name'])):
@@ -338,7 +335,7 @@ def copyright(dpath, ctx, env):
                 ctx['license'] = '\n'.join(license)
             break
     if not ctx.get('copyright'):
-        ctx['copyright'] = "{} <{}>".format(ctx['author'], ctx['author_email'])
+        ctx['copyright'] = ctx['author']
     return ctx
 
 

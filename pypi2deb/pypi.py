@@ -71,8 +71,7 @@ def parse_pypi_info(data):
         'description': info['description'].replace('\r\n', '\n'),
         'homepage': info['home_page'],
         'license_name': info['license'],
-        'author': info['author'],
-        'author_email': info['author_email'],
+        'author': '{author} <{author_email}>'.format(**info),
         'homepage': info['home_page'],
     }
     if 'requires' in info:  # see f.e. qutebrowser

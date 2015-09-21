@@ -1,14 +1,14 @@
-From: {{creator}} <{{creator_email}}>
+From: {{creator}}
 To: Debian Bug Tracking System <submit@bugs.debian.org>
 Subject: ITP: {{src_name}} -- {{short_desc}}
 
 Package: wnpp
 Severity: wishlist
-Owner: {{maintainer}} <{{email}}>
+Owner: {{maintainer}}
 
 * Package name    : {{src_name}}
   Version         : {{version}}
-  Upstream Author : {{author}} <{{author_email}}>
+  Upstream Author : {{author}}
 * URL             : {{homepage}}
 * License         : {{license_name}}
   Programming Lang: Python

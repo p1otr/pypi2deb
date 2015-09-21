@@ -14,9 +14,10 @@ features
 * guesses build dependencies
 * creates -doc package with Sphinx regenerated documentation
 * generates ITP email template
-* easy to override / customise
+* easy to customise (profiles, overrides, templates)
 * uses Debian tools to generate files if possible
 * integrates with dh-python's tools
+* asynchronous
 
 
 examples

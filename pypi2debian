@@ -112,6 +112,8 @@ class Converter:
                 if not ctx:
                     log.error('%s %s: cannot find details on PyPI', name, version)
                     continue
+                if not version:
+                    version = ctx['version']
                 ctx['src_name'] = pkg_name(name)
                 ctx['debian_revision'] = '0~pypi2deb'
 

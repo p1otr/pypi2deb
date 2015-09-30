@@ -42,6 +42,7 @@ from dhpython.pydist import guess_dependency, parse_pydep
 log = logging.getLogger('pypi2deb')
 SPHINX_DIR = {'docs', 'doc', 'doc/build'}
 INTERPRETER_MAP = {value: key for key, value in PKG_PREFIX_MAP.items()}
+VERSIONED_I_MAP = {'python': 'python2'}
 
 
 def _copy_static_files(src_dir, debian_dir):
@@ -255,8 +256,7 @@ def control(dpath, ctx, env):
 
 @_render_template
 def rules(dpath, ctx, env):
-    MAP = {'python': 'python2'}
-    ctx['with'] = ','.join(MAP.get(i, i) for i in ctx['interpreters'])
+    ctx['with'] = ','.join(VERSIONED_I_MAP.get(i, i) for i in ctx['interpreters'])
     if ctx.get('docs', {}).get('sphinx_dir'):
         ctx['with'] += ',sphinxdoc'
 
@@ -268,7 +268,8 @@ def rules(dpath, ctx, env):
                     for interpreter in ctx['interpreters']:
                         if interpreter == 'python3':
                             continue
-                        ctx['exports']['PYBUILD_AFTER_INSTALL_{}'.format(interpreter)] = 'rm -rf {destdir}/usr/bin/'
+                        ipreter = VERSIONED_I_MAP.get(interpreter, interpreter)
+                        ctx['exports']['PYBUILD_AFTER_INSTALL_{}'.format(ipreter)] = 'rm -rf {destdir}/usr/bin/'
                     break
 
     return ctx

@@ -129,6 +129,10 @@ def update_ctx(dpath, ctx):
 
             for fname in file_names:
                 if fname.endswith('.pyx'):
+                    if 'python' in ctx['interpreters']:
+                        ctx['build_depends'].add('cython')
+                    if 'python3' in ctx['interpreters']:
+                        ctx['build_depends'].add('cython3')
                     for ext in ('c', 'cpp'):
                         fname_c = fname[:-3] + ext
                         if fname_c in file_names:

@@ -12,6 +12,7 @@ features
 * uses PyPI metadata
 * supports Python 2.X, 3.X and PyPy
 * guesses build dependencies
+* reuses existing Debian package names if already packaged in Debian
 * creates -doc package with Sphinx regenerated documentation
 * generates ITP email template
 * easy to customise (profiles, overrides, templates)
@@ -35,7 +36,7 @@ jinja2_2.8-0~py2deb.mail file with ITP (intend to package) template
   to build these packages using sbuild (if "unstable" schroot is already set up)
 * ``pypi2debian --python3 --classifiers 'Operating System :: POSIX :: Linux'``
   will create only python3-foo packages for all Linux compatible packages.
-  See list `classifiers page`_ for possible ``--classifiers`` values
+  See `classifiers page`_ for possible ``--classifiers`` values
 
 .. _classifiers page: https://pypi.python.org/pypi?%3Aaction=list_classifiers
 

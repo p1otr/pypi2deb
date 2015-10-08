@@ -1,0 +1,6 @@
+overrides /usr/share/pypi2deb/
+profiles /usr/share/pypi2deb/
+pypi2deb /usr/share/pypi2deb/
+templates /usr/share/pypi2deb/
+py2dsp /usr/share/pypi2deb/
+pypi2debian /usr/share/pypi2deb/

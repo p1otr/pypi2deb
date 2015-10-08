@@ -1,0 +1,8 @@
+#! /usr/bin/make -f
+
+%:
+	dh $@ --with python3
+
+override_dh_auto_clean:
+	dh_auto_clean
+	find . -type d -name __pycache__ -print0 | xargs --null --no-run-if-empty rm -rf

@@ -1,0 +1,5 @@
+pypi2deb (1.20151008) unstable; urgency=medium
+
+  * Initial release (closes: #801334)
+
+ -- Piotr Ożarowski <piotr@debian.org>  Thu, 08 Oct 2015 20:39:55 +0200

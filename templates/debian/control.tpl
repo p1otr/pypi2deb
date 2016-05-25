@@ -7,7 +7,7 @@ Uploaders: {{uploaders}}{% endif %}
 Build-Depends: debhelper (>= 9), dh-python,
 {%- for dependency in build_depends|sort %}
                {{dependency}},{% endfor %}
-Standards-Version: 3.9.6
+Standards-Version: 3.9.8
 {%- if homepage %}
 Homepage: {{homepage}}{% endif %}
 {%- if vcs_name and vcs_src %}

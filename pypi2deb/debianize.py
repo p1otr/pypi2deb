@@ -92,14 +92,19 @@ def debianize(dpath, ctx, profile=None):
     # copy static files
     debian_dir = join(dpath, 'debian')
     override_path = join(OVERRIDES_PATH, ctx['name'].lower())
+    cwd_override_path = join('overrides', ctx['name'].lower())
+
     override_dpath = join(override_path, 'debian')
+    cwd_override_dpath = join(cwd_override_path, 'debian')
+
     _copy_static_files(override_dpath, debian_dir)
+    _copy_static_files(cwd_override_dpath, debian_dir)
     _copy_static_files(join(TEMPLATES_PATH, 'debian'), debian_dir)
     if profile:
         _copy_static_files(join(PROFILES_PATH, profile, 'debian'), debian_dir)
 
-    env = Environment(loader=FileSystemLoader([dpath, override_path,
-                                               TEMPLATES_PATH]))
+    env = Environment(loader=FileSystemLoader([
+        dpath, cwd_override_path, override_path, TEMPLATES_PATH]))
 
     # render debian dir files (note that order matters)
     docs(dpath, ctx, env)

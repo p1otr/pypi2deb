@@ -43,6 +43,8 @@ log = logging.getLogger('pypi2deb')
 SPHINX_DIR = {'docs', 'doc', 'doc/build'}
 INTERPRETER_MAP = {value: key for key, value in PKG_PREFIX_MAP.items()}
 VERSIONED_I_MAP = {'python': 'python2'}
+DESC_STOP_KEYWORDS = {'changelog', 'changes', 'license', 'requirements',
+                      'installation'}
 
 
 def _copy_static_files(src_dir, debian_dir):
@@ -202,6 +204,8 @@ def control(dpath, ctx, env):
                 elif code_line:
                     code_line = False
                 line = ' ' + line
+            elif line.strip().lower() in DESC_STOP_KEYWORDS:
+                break
             line = line.replace('\t', '    ')
             desc.append(' ' + line)
     for key, value in {

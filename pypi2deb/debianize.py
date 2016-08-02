@@ -70,41 +70,49 @@ def debianize(dpath, ctx, profile=None):
         if 'py2dsp' in upstream_cfg:
             ctx.update(upstream_cfg['py2dsp'].items())
 
+    override_paths = [TEMPLATES_PATH]
+
+    # profile overrides
     if profile:
-        if exists(profile):
+        if isdir(profile):  # --profile a_dir
+            override_paths.append(profile)
+        elif exists(profile):  # --profile a_file
             with open(profile) as fp:
                 ctx.update(load(fp))
-        else:
-            profile_fpath = join(PROFILES_PATH, profile, 'ctx.json')
-            if exists(profile_fpath):
-                with open(profile_fpath) as fp:
-                    ctx.update(load(fp))
+        else:  # --profile name
+            profile_dpath = join(PROFILES_PATH, profile)
+            if isdir(profile_dpath):
+                override_paths.append(profile_dpath)
 
-    override_fpath = join(OVERRIDES_PATH, ctx['name'].lower(), 'ctx.json')
-    if exists(override_fpath):
-        with open(override_fpath) as fp:
-            ctx.update(load(fp))
+    # package specific overrides... in global overrides dir
+    o_dpath = join(OVERRIDES_PATH, ctx['name'].lower())
+    isdir(o_dpath) and override_paths.append(o_dpath)
+    # ... in local ./overrides
+    o_dpath = join('overrides', ctx['name'].lower())
+    isdir(o_dpath) and override_paths.append(o_dpath)
+
+    # handle overrides
+    debian_dir = join(dpath, 'debian')
+    for o_dpath in override_paths:
+        fpath = join(o_dpath, 'ctx.json')
+        if exists(fpath):
+            with open(fpath) as fp:
+                ctx.update(load(fp))
+    for o_dpath in reversed(override_paths):
+        # copy static files
+        deb_dpath = join(o_dpath, 'debian')
+        if isdir(deb_dpath):
+            _copy_static_files(deb_dpath, debian_dir)
 
     for key in ('vcs_src', 'vcs_browser', 'uploaders'):
         if key in ctx:
             ctx[key] = ctx[key].format(**ctx)
 
-    # copy static files
-    debian_dir = join(dpath, 'debian')
-    override_path = join(OVERRIDES_PATH, ctx['name'].lower())
-    cwd_override_path = join('overrides', ctx['name'].lower())
-
-    override_dpath = join(override_path, 'debian')
-    cwd_override_dpath = join(cwd_override_path, 'debian')
-
-    _copy_static_files(override_dpath, debian_dir)
-    _copy_static_files(cwd_override_dpath, debian_dir)
-    _copy_static_files(join(TEMPLATES_PATH, 'debian'), debian_dir)
-    if profile:
-        _copy_static_files(join(PROFILES_PATH, profile, 'debian'), debian_dir)
-
-    env = Environment(loader=FileSystemLoader([
-        dpath, cwd_override_path, override_path, TEMPLATES_PATH]))
+    # Jinja setup: set templates directories
+    templates_dir = [dpath]  # use existing dir as a template dir as well
+    templates_dir.extend(override_paths)
+    templates_dir.append(TEMPLATES_PATH)
+    env = Environment(loader=FileSystemLoader(templates_dir))
 
     # render debian dir files (note that order matters)
     docs(dpath, ctx, env)

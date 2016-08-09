@@ -13,3 +13,8 @@ License: {{deb_license_name}}
 
 License: {{license_name}}
 {{license}}
+{%- if license_name != deb_license_name %}
+
+License: {{deb_license_name}}
+{{deb_license}}
+{% endif %}

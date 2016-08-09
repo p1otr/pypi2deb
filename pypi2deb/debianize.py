@@ -375,11 +375,25 @@ def changelog(dpath, ctx, env):
 
 @_render_template
 def copyright(dpath, ctx, env):
-    ctx['deb_copyright'] = "2015 © {}".format(ctx['creator'])
-    ctx['deb_license_name'] = ctx['license_name']
+    if not ctx.get('deb_copyright'):
+        ctx['deb_copyright'] = "{} © {}".format(datetime.now().year, ctx['creator'])
+    if ctx['license_name'] == 'Apache 2':
+        ctx['license_name'] = 'Apache2'
+        ctx['license'] = ' See /usr/share/common-licenses/Apache-2.0'
+    if not ctx.get('deb_license_name'):
+        ctx['deb_license_name'] = ctx['license_name']
+        ctx['deb_license'] = ctx.get('license', '')
+    if not ctx.get('deb_license') and ctx['deb_license_name']:
+        ctx['deb_license'] = ''
+        fpath = '/usr/share/common-licenses/{}'.format(ctx['deb_license_name'])
+        if exists(fpath):
+            license = []
+            with open(fpath, encoding='utf-8') as fp:
+                for line in fp:
+                    line = line.rstrip()
+                    license.append(' {}'.format(line) if line else ' .')
+            ctx['deb_license'] = '\n'.join(license)
 
-    if exists('/usr/share/common-licenses/{}'.format(ctx['license_name'])):
-        pass  # FIXME
     ctx.setdefault('copyright', '')
 
     if not ctx.get('license'):
@@ -389,8 +403,8 @@ def copyright(dpath, ctx, env):
                 continue
             with open(join(dpath, fn), 'r') as fp:
                 for line in fp:
-                    line = line.strip('\n')
-                    if not line.strip():
+                    line = line.rstrip()
+                    if not line:
                         license.append(' .')
                     else:
                         license.append(' ' + line)

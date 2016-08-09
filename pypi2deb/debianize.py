@@ -187,7 +187,7 @@ def _dump_ctx(ctx):
         with open(fpath, 'w') as fp:
             dump(serializable_ctx, fp, indent=' ')
     except Exception:
-        log.debug('canont dump ctx', exc_info=True)
+        log.debug('cannot dump ctx', exc_info=True)
 
 
 def docs(dpath, ctx, env):

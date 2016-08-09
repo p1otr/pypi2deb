@@ -118,6 +118,7 @@ def debianize(dpath, ctx, profile=None):
     docs(dpath, ctx, env)
     control(dpath, ctx, env)
     rules(dpath, ctx, env)
+    chmod(join(dpath, 'debian', 'rules'), 0o755)
     initial_release = yield from changelog(dpath, ctx, env)
     if initial_release:
         itp_mail(dpath, ctx, env)

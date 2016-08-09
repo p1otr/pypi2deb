@@ -23,7 +23,6 @@ Depends: ${misc:Depends}, ${python:Depends},{% if binary_arch == 'any' %} ${shli
          {{dependency}},{% endfor %}
 Recommends: ${python:Recommends}
 Suggests: ${python:Suggests}
-XB-Python-Egg-Name: {{name}}
 Description: {{short_desc}} - Python 2.X
 {{long_desc}}{% endif %}
 {%- if 'python3' in interpreters %}
@@ -35,7 +34,6 @@ Depends: ${misc:Depends}, ${python3:Depends},{% if binary_arch == 'any' %} ${shl
          {{dependency}},{% endfor %}
 Recommends: ${python3:Recommends}
 Suggests: ${python3:Suggests}
-XB-Python-Egg-Name: {{name}}
 Description: {{short_desc}}
 {{long_desc}}{% endif %}
 {%- if 'pypy' in interpreters %}
@@ -47,7 +45,6 @@ Depends: ${misc:Depends}, ${pypy:Depends},{% if binary_arch == 'any' %} ${shlibs
            {{dependency}},{% endfor %}
 Recommends: ${pypy:Recommends}
 Suggests: ${pypy:Suggests}
-XB-Python-Egg-Name: {{name}}
 Description: {{short_desc}}
 {{long_desc}}{% endif %}
 {%- if docs and 'sphinx_dir' in docs %}

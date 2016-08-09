@@ -2,6 +2,6 @@
 "distribution": "unstable",
 "message": "Initial release (closes: #NNNNNN)",
 "uploaders": "Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>",
-"vcs_browser": "https://anonscm.debian.org/cgit/python-modules/packages/{src_name}.git",
+"vcs_browser": "https://anonscm.debian.org/git/python-modules/packages/{src_name}.git",
 "vcs_name": "Git",
 "vcs_src": "https://anonscm.debian.org/git/python-modules/packages/{src_name}.git"}

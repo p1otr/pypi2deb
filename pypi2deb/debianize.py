@@ -21,8 +21,8 @@
 import logging
 from configparser import ConfigParser
 from datetime import datetime
-from os import listdir, makedirs, walk
-from os.path import exists, join
+from os import access, chmod, listdir, makedirs, walk, X_OK
+from os.path import abspath, exists, isdir, join
 from shutil import copy
 
 from pypi2deb import VERSION, OVERRIDES_PATH, PROFILES_PATH, TEMPLATES_PATH
@@ -31,9 +31,9 @@ from pypi2deb.tools import execute
 from jinja2 import Environment, FileSystemLoader
 from debian.changelog import Changelog, Version, get_maintainer
 try:
-    from simplejson import load
+    from simplejson import load, dump
 except ImportError:
-    from json import load
+    from json import load, dump
 
 from dhpython import PKG_PREFIX_MAP
 from dhpython.pydist import guess_dependency, parse_pydep
@@ -98,6 +98,16 @@ def debianize(dpath, ctx, profile=None):
         if exists(fpath):
             with open(fpath) as fp:
                 ctx.update(load(fp))
+        # invoke pre hooks
+        fpath = abspath(join(o_dpath, 'hooks', 'pre'))
+        if exists(fpath) and access(fpath, X_OK):
+            _dump_ctx(ctx)
+            code = yield from execute([fpath, ctx['src_name'],
+                                       ctx['version'], ctx['debian_revision']],
+                                      cwd=dpath)
+            if code != 0:
+                raise Exception("pre hook for %s failed with %d return code" % (
+                                ctx['name'], code))
     for o_dpath in reversed(override_paths):
         # copy static files
         deb_dpath = join(o_dpath, 'debian')
@@ -127,6 +137,18 @@ def debianize(dpath, ctx, profile=None):
     watch(dpath, ctx, env)
     clean(dpath, ctx, env)
 
+    # invoke post hooks
+    for o_dpath in override_paths:
+        fpath = join(o_dpath, 'hooks', 'post')
+        if exists(fpath) and access(fpath, X_OK):
+            _dump_ctx(ctx)
+            code = yield from execute([fpath, ctx['src_name'],
+                                       ctx['version'], ctx['debian_revision']],
+                                      cwd=dpath)
+            if code != 0:
+                raise Exception("post hook for %s failed with %d return code" % (
+                                ctx['name'], code))
+
 
 def update_ctx(dpath, ctx):
     ctx.setdefault('exports', {})
@@ -154,6 +176,18 @@ def update_ctx(dpath, ctx):
                         fname_c = fname[:-3] + ext
                         if fname_c in file_names:
                             ctx['clean_files'].add(join(root.replace(dpath, '.'), fname_c))
+
+
+def _dump_ctx(ctx):
+    """dump ctx in JSON format so that hooks can use it"""
+    try:
+        fpath = join(ctx['root'], '{src_name}_{version}-{debian_revision}.ctx'.format(**ctx))
+        serializable_ctx = {key: (value if not isinstance(value, set) else tuple(value))
+                            for (key, value) in ctx.items()}
+        with open(fpath, 'w') as fp:
+            dump(serializable_ctx, fp, indent=' ')
+    except Exception:
+        log.debug('canont dump ctx', exc_info=True)
 
 
 def docs(dpath, ctx, env):

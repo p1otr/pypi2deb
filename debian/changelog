@@ -1,3 +1,16 @@
+pypi2deb (1.20160809) unstable; urgency=medium
+
+  * New release:
+    - add support for pre and post hooks (scripts that are invoked before and
+      after creating debian directory)
+    - add DPMT post hook that initializes git(-dpm) repository
+    - read overrides also from ./overrides directory (if present)
+    - add --build option to py2dsp (to build also binary package, not just
+      source one)
+    - some smaller improvements
+
+ -- Piotr Ożarowski <piotr@debian.org>  Tue, 09 Aug 2016 21:00:43 +0200
+
 pypi2deb (1.20151008) unstable; urgency=medium
 
   * Initial release (closes: #801334)

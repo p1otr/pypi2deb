@@ -205,7 +205,14 @@ def _render_template(func):
 def control(dpath, ctx, env):
     desc = []
     code_line = False
+    first_line = True
     for line in ctx['description'].split('\n'):
+        if first_line:
+            if line.lower() == ctx['name'].lower():
+                continue
+            if not line.strip().replace('=', '').replace('-', '').replace('~', ''):
+                continue
+            first_line = False
         if not line.strip():
             desc.append(' .')
         else:

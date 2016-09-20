@@ -34,7 +34,7 @@ git-dpm prepare
 git-dpm status
 
 echo "I: to create repository on git.debian.org:"
-echo "   ssh git.debian.org -c 'cd /git/python-modules && ./setup-repository ${NAME} \"${NAME} packaging\"'"
+echo "   ssh git.debian.org 'cd /git/python-modules && ./setup-repository ${NAME} \"${NAME} packaging\"'"
 
 echo "I: to push (after reviewing all files) changes to DPMT's repo:"
 echo "   git push --set-upstream origin --all"

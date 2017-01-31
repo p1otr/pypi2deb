@@ -292,7 +292,7 @@ def control(dpath, ctx, env):
             for impl in ctx['interpreters']:
                 impl = INTERPRETER_MAP.get(impl, impl)
                 try:
-                    for i in parse_pydep(impl, fpath):
+                    for i in parse_pydep(impl, fpath)['depends']:
                         ctx['build_depends'].add(i)
                 except Exception as err:
                     log.warn('cannot parse build dependency: %s', err)

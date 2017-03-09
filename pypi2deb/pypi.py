@@ -69,7 +69,6 @@ def parse_pypi_info(data):
         'name': info['name'],
         'version': info['version'],
         'description': info['description'].replace('\r\n', '\n'),
-        'homepage': info['home_page'],
         'license_name': info['license'],
         'author': '{author} <{author_email}>'.format(**info),
         'homepage': info['home_page'],

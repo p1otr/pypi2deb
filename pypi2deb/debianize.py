@@ -21,7 +21,7 @@
 import logging
 from configparser import ConfigParser
 from datetime import datetime
-from os import access, chmod, listdir, makedirs, walk, X_OK
+from os import access, chmod, environ, listdir, makedirs, walk, X_OK
 from os.path import abspath, exists, isdir, join
 from shutil import copy
 
@@ -40,7 +40,14 @@ from dhpython.pydist import guess_dependency, parse_pydep
 
 
 log = logging.getLogger('pypi2deb')
-SPHINX_DIR = {'docs', 'doc', 'doc/build'}
+# The location of sphinx-based documentation can be configured via the
+# environment variable PYPI2DEB_SPHINX_DIRS (colon-separated directories).
+# Disable sphinx support by assigning an empty string to this environment
+# variable.
+try:
+    SPHINX_DIR = set(environ['PYPI2DEB_SPHINX_DIRS'].split(":"))
+except KeyError:
+    SPHINX_DIR = {'docs', 'doc', 'doc/build'}
 INTERPRETER_MAP = {value: key for key, value in PKG_PREFIX_MAP.items()}
 VERSIONED_I_MAP = {'python': 'python2'}
 DESC_STOP_KEYWORDS = {'changelog', 'changes', 'license', 'requirements',

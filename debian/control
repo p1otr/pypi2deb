@@ -3,7 +3,7 @@ Section: python
 Priority: optional
 Maintainer: Piotr Ożarowski <piotr@debian.org>
 Build-Depends: debhelper (>= 9), dh-python, python3 (>= 3.4.2)
-Standards-Version: 3.9.6
+Standards-Version: 4.0.0
 Homepage: https://github.com/p1otr/pypi2deb
 Vcs-Git: https://github.com/p1otr/pypi2deb
 Vcs-Browser: https://github.com/p1otr/pypi2deb

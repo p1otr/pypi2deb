@@ -1,3 +1,13 @@
+pypi2deb (1.20170623) unstable; urgency=medium
+
+  * New release:
+    - add PYPI2DEB_SPHINX_DIRS
+    - aiohttp 2.X compatible
+    - minor fixes
+  * Standards-Version bumped to 4.0.0 (no changes needed)
+
+ -- Piotr Ożarowski <piotr@debian.org>  Fri, 23 Jun 2017 19:29:46 +0200
+
 pypi2deb (1.20160809) unstable; urgency=medium
 
   * New release:

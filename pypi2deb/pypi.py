@@ -33,8 +33,6 @@ from pypi2deb.tools import pkg_name, execute
 PYPI_JSON_URL = environ.get('PYPI_JSON_URL', 'https://pypi.python.org/pypi/')
 PYPI_XMLRPC_URL = environ.get('PYPI_XMLRPC_URL', 'https://pypi.python.org/pypi')
 log = logging.getLogger('pypi2deb')
-conn = aiohttp.TCPConnector(use_dns_cache=True, limit=30)
-atexit.register(conn.close)
 
 
 @asyncio.coroutine
@@ -43,8 +41,10 @@ def get_pypi_info(name, version=None):
     if version:
         url += '/' + version
     url += '/json'
+    session = None
     try:
-        response = yield from aiohttp.get(url, connector=conn)
+        session = aiohttp.ClientSession()
+        response = yield from session.get(url)
     except Exception as err:
         log.error('invalid project name: {} ({})'.format(name, err))
     else:
@@ -54,6 +54,8 @@ def get_pypi_info(name, version=None):
             log.warn('cannot download %s %s details from PyPI: %r', name, version, err)
             return
         return result
+    finally:
+        session is not None and session.close()
 
 
 def parse_pypi_info(data):
@@ -141,10 +143,15 @@ def download(name, version=None, destdir='.'):
     if exists(fpath):
         return fname
 
-    response = yield from aiohttp.get(release['url'], connector=conn)
-    with open(fpath if ext == orig_ext else join(destdir, release['filename']), 'wb') as fp:
-        data = yield from response.read()
-        fp.write(data)
+    session = None
+    try:
+        session = aiohttp.ClientSession()
+        response = yield from session.get(release['url'])
+        with open(fpath if ext == orig_ext else join(destdir, release['filename']), 'wb') as fp:
+            data = yield from response.read()
+            fp.write(data)
+    finally:
+        session is not None and session.close()
 
     if orig_ext != ext:
         cmd = ['mk-origtargz', '--rename', '--compression', 'xz',

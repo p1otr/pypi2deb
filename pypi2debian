@@ -249,7 +249,7 @@ if __name__ == '__main__':
     commands = parser.add_argument_group('commands', 'override commands')
     commands.add_argument('--build-src-cmd', action='store', metavar='COMMAND',
                           help='command to build source package',
-                          default='dpkg-buildpackage -S -uc -us -I.git -i.git')
+                          default='dpkg-buildpackage -S -uc -us -nc -d -I.git -i.git')
     commands.add_argument('--build-cmd', action='store', metavar='COMMAND',
                           help='build command, none by default')
 

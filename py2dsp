@@ -71,7 +71,7 @@ def main(args):
         dpath = unpack(fpath, args.root, dirname)
 
     yield from debianize(dpath, ctx, args.profile)
-    yield from execute(['dpkg-buildpackage', '-S', '-us', '-uc',
+    yield from execute(['dpkg-buildpackage', '-S', '-us', '-uc', '-nc', '-d',
                         '-I.git', '-i.git'], dpath)
     if args.build:
         yield from execute(['dpkg-buildpackage', '-b'], dpath)

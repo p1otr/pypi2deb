@@ -7,7 +7,7 @@ Uploaders: {{uploaders}}{% endif %}
 Build-Depends: debhelper (>= 9), dh-python,
 {%- for dependency in build_depends|sort %}
                {{dependency}},{% endfor %}
-Standards-Version: 4.0.0
+Standards-Version: 4.1.2
 {%- if homepage %}
 Homepage: {{homepage}}{% endif %}
 {%- if vcs_name and vcs_src %}
@@ -52,7 +52,6 @@ Description: {{short_desc}}
 Package: python-{{src_name}}-doc
 Section: doc
 Architecture: all
-Priority: extra
 Depends: ${misc:Depends}, ${sphinxdoc:Depends}
 Description: documentation for the {{name}} Python library
  This package provides documentation for {{name}} {% endif %}

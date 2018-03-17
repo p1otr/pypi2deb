@@ -112,7 +112,7 @@ def parse_pkg_info(fpath):
     """Parse PKG-INFO file"""
     raise NotImplementedError()  # FIXME
 
-
+@asyncio.coroutine
 def download(name, version=None, destdir='.'):
     details = yield from get_pypi_info(name, version)
     if not details:

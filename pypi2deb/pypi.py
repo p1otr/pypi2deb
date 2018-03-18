@@ -55,7 +55,8 @@ def get_pypi_info(name, version=None):
             return
         return result
     finally:
-        session is not None and session.close()
+        if session is not None:
+            yield from session.close()
 
 
 def parse_pypi_info(data):
@@ -152,7 +153,8 @@ def download(name, version=None, destdir='.'):
             data = yield from response.read()
             fp.write(data)
     finally:
-        session is not None and session.close()
+        if session is not None:
+            yield from session.close()
 
     if orig_ext != ext:
         cmd = ['mk-origtargz', '--rename', '--compression', 'xz',

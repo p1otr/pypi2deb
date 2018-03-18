@@ -4,7 +4,7 @@ Upstream-Contact: Piotr Ożarowski <piotr@debian.org>
 Source: https://github.com/p1otr/pypi2deb
 
 Files: *
-Copyright: 2015 Piotr Ożarowski <piotr@debian.org>
+Copyright: 2015-2018 Piotr Ożarowski <piotr@debian.org>
 License: Expat
 
 License: Expat

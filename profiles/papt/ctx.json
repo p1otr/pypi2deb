@@ -2,6 +2,6 @@
 "distribution": "unstable",
 "message": "Initial release (closes: #NNNNNN)",
 "uploaders": "Python Applications Packaging Team <python-apps-team@lists.alioth.debian.org>",
-"vcs_browser": "http://anonscm.debian.org/viewvc/python-apps/packages/{src_name}/trunk/",
-"vcs_name": "Svn",
-"vcs_src": "svn://anonscm.debian.org/python-apps/packages/{src_name}/trunk/"}
+"vcs_browser": "https://salsa.debian.org/python-team/applications/{src_name}",
+"vcs_name": "Git",
+"vcs_src": "https://salsa.debian.org/python-team/applications/{src_name}.git"}

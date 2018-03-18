@@ -1,3 +1,11 @@
+pypi2deb (2.20180318) unstable; urgency=medium
+
+  * Fix Python 3.6 / latest aiohttp compatibility
+  * Do not try to clean/check build dependencies while building source package
+  * Standards-Version bumped to 4.1.3 (no changes needed)
+
+ -- Piotr Ożarowski <piotr@debian.org>  Sun, 18 Mar 2018 21:49:31 +0100
+
 pypi2deb (1.20170623) unstable; urgency=medium
 
   * New release:

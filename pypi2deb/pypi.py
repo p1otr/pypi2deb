@@ -30,8 +30,8 @@ import aiohttp
 from pypi2deb.decorators import cache
 from pypi2deb.tools import pkg_name, execute
 
-PYPI_JSON_URL = environ.get('PYPI_JSON_URL', 'https://pypi.python.org/pypi/')
-PYPI_XMLRPC_URL = environ.get('PYPI_XMLRPC_URL', 'https://pypi.python.org/pypi')
+PYPI_JSON_URL = environ.get('PYPI_JSON_URL', 'https://pypi.org/pypi')
+PYPI_XMLRPC_URL = environ.get('PYPI_XMLRPC_URL', 'https://pypi.org/pypi')
 log = logging.getLogger('pypi2deb')
 
 

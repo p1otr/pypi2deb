@@ -85,7 +85,12 @@ def debianize(dpath, ctx, profile=None):
             override_paths.append(profile)
         elif exists(profile):  # --profile a_file
             with open(profile) as fp:
+                set_keys = [key for (key, value) in ctx.items() if isinstance(value, set)]
                 ctx.update(load(fp))
+                # recover sets from Json lists
+                for set_key in set_keys:
+                    if not isinstance(ctx[set_key], set):
+                        ctx[set_key] = set(ctx[set_key])
         else:  # --profile name
             profile_dpath = join(PROFILES_PATH, profile)
             if isdir(profile_dpath):
@@ -104,7 +109,12 @@ def debianize(dpath, ctx, profile=None):
         fpath = join(o_dpath, 'ctx.json')
         if exists(fpath):
             with open(fpath) as fp:
+                set_keys = [key for (key, value) in ctx.items() if isinstance(value, set)]
                 ctx.update(load(fp))
+                # recover sets from Json lists
+                for set_key in set_keys:
+                    if not isinstance(ctx[set_key], set):
+                        ctx[set_key] = set(ctx[set_key])
         # invoke pre hooks
         fpath = abspath(join(o_dpath, 'hooks', 'pre'))
         if exists(fpath) and access(fpath, X_OK):

@@ -51,14 +51,17 @@ def main(args):
         ctx = yield from get_pypi_info(name)
         ctx = parse_pypi_info(ctx)
     else:  # download from PyPI
-        ctx = yield from get_pypi_info(args.name)
+        parsed = parse_filename(args.name)
+        version = parsed.get('version')
+        name = parsed.get('name') or args.name
+        ctx = yield from get_pypi_info(name, version)
         ctx = parse_pypi_info(ctx)
         if not ctx:
             log.error('invalid name: %s', args.name)
             exit(1)
         name = ctx['name']
         version = ctx['version']
-        fname = yield from download(name, destdir=args.root)
+        fname = yield from download(name, version=version, destdir=args.root)
         fpath = join(args.root, fname)
 
     ctx['root'] = args.root

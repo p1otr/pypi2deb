@@ -9,34 +9,25 @@ TARBALL=`find .. -maxdepth 1 -type f -name "${NAME}_${VERSION}.orig.tar.*" -prin
 
 # do nothing if .git directory exists
 test \! -d .git || exit 0
-# make sure git-dpm and pristine-tar areinstalled
-for dep in git-dpm pristine-tar; do
-  test -x "/usr/bin/$dep" || echo "E: please install $dep package"
-done | grep . >&2 && exit 1
+# make sure needed tools are installed
+test -x "/usr/bin/pristine-tar" || (echo "E: please install pristine-tar package"; exit 1)
+test -x "/usr/bin/gbp" || (echo "E: please install git-buildpackage package"; exit 1)
 
 git init
-git remote add origin ssh://git.debian.org/git/python-modules/packages/${NAME}.git
+git remote add origin ssh://git@salsa.debian.org/python-team/modules/${NAME}.git
+git checkout -b upstream
 echo debian > .git/info/exclude
 git add .
 git commit -m "import ${TARBALL}"
-git checkout -b upstream
 pristine-tar commit ../${TARBALL} upstream
 
-git-dpm init ../${TARBALL}
+git checkout -b debian/master
 rm .git/info/exclude
 git add debian/*
-cat << EOF >> debian/.git-dpm
-debianTag="debian/%e%v"
-patchedTag="patched/%e%v"
-upstreamTag="upstream/%e%u"
-EOF
 git commit -a -m 'add initial Debian packaging'
 
-git-dpm prepare
-git-dpm status
-
-echo "I: to create repository on git.debian.org:"
-echo "   ssh git.debian.org 'cd /git/python-modules && ./setup-repository ${NAME} \"${NAME} packaging\"'"
+echo 'I: to create remote repository go to https://salsa.debian.org/python-team/modules/ and click on "New project" link'
+echo '   (https://salsa.debian.org/projects/new?namespace_id=2781)'
 
 echo "I: to push (after reviewing all files) changes to DPMT's repo:"
 echo "   git push --set-upstream origin --all"

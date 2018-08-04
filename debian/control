@@ -7,7 +7,6 @@ Standards-Version: 4.2.0
 Homepage: https://github.com/p1otr/pypi2deb
 Vcs-Git: https://github.com/p1otr/pypi2deb
 Vcs-Browser: https://github.com/p1otr/pypi2deb
-X-Python3-Version: >= 3.4.2
 
 Package: pypi2deb
 Architecture: all

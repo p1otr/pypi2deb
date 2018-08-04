@@ -1,3 +1,17 @@
+pypi2deb (2.20180804) unstable; urgency=medium
+
+  [ Oliver Okrongli ]
+  * py2dsp: Support downloading specific version (e.g. 'pytest/3.1.1')
+  * Fix set-typed values in ctx override files
+
+  [ Alexandros Afentoulis ]
+  * Use new Python Package Index URL: https://pypi.org
+
+  [ Piotr Ożarowski ]
+  * Update DPMT/PAPT profiles to reflect move to salsa / gbp
+
+ -- Piotr Ożarowski <piotr@debian.org>  Sat, 04 Aug 2018 14:56:57 +0800
+
 pypi2deb (2.20180318) unstable; urgency=medium
 
   * Fix Python 3.6 / latest aiohttp compatibility

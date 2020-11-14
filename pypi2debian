@@ -273,6 +273,10 @@ if __name__ == '__main__':
         logging.getLogger('pypi2deb').setLevel(logging.INFO)
         log.setLevel(logging.INFO)
 
+    if args.profile in ('dpmt', 'papt'):
+        logging.warning("'dpmt' and 'papt' profiles have been replaced by the 'dpt' profile")
+        args.profile = 'dpt'
+
     if args.python3:
         args.classifiers.append('Programming Language :: Python :: 3')
     elif args.pypy:

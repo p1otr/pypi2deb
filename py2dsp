@@ -141,6 +141,10 @@ if __name__ == '__main__':
     log.debug('version: {}'.format(VERSION))
     log.debug(sys.argv)
 
+    if args.profile in ('dpmt', 'papt'):
+        logging.warning("'dpmt' and 'papt' profiles have been replaced by the 'dpt' profile")
+        args.profile = 'dpt'
+
     loop = asyncio.get_event_loop()
     try:
         loop.run_until_complete(main(args))

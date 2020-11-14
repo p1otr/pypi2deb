@@ -1,0 +1,7 @@
+{"debian_revision": "1",
+"distribution": "unstable",
+"message": "Initial release; Closes: #NNNNNN",
+"uploaders": "Debian Python Team <team+python@tracker.debian.org>",
+"vcs_browser": "https://salsa.debian.org/python-team/packages/{src_name}",
+"vcs_name": "Git",
+"vcs_src": "https://salsa.debian.org/python-team/packages/{src_name}.git"}

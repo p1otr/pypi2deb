@@ -14,7 +14,7 @@ test -x "/usr/bin/pristine-tar" || (echo "E: please install pristine-tar package
 test -x "/usr/bin/gbp" || (echo "E: please install git-buildpackage package"; exit 1)
 
 git init
-git remote add origin ssh://git@salsa.debian.org/python-team/applications/${NAME}.git
+git remote add origin ssh://git@salsa.debian.org/python-team/packages/${NAME}.git
 git checkout -b upstream
 echo debian > .git/info/exclude
 git add .
@@ -26,8 +26,8 @@ rm .git/info/exclude
 git add debian/*
 git commit -a -m 'add initial Debian packaging'
 
-echo 'I: to create remote repository go to https://salsa.debian.org/python-team/applications/ and click on "New project" link'
-echo '   (https://salsa.debian.org/projects/new?namespace_id=2782)'
+echo 'I: to create remote repository go to https://salsa.debian.org/python-team/packages and click on "New project" link'
+echo '   (https://salsa.debian.org/projects/new?namespace_id=9360)'
 
-echo "I: to push (after reviewing all files) changes to PAPT's repo:"
+echo "I: to push (after reviewing all files) changes to DPT's repo:"
 echo "   git push --set-upstream origin --all"

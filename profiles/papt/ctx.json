@@ -1,7 +1,0 @@
-{"debian_revision": "1",
-"distribution": "unstable",
-"message": "Initial release (closes: #NNNNNN)",
-"uploaders": "Python Applications Packaging Team <python-apps-team@lists.alioth.debian.org>",
-"vcs_browser": "https://salsa.debian.org/python-team/applications/{src_name}",
-"vcs_name": "Git",
-"vcs_src": "https://salsa.debian.org/python-team/applications/{src_name}.git"}

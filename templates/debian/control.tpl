@@ -4,7 +4,8 @@ Priority: optional
 Maintainer: {{maintainer}}
 {%- if uploaders %}
 Uploaders: {{uploaders}}{% endif %}
-Build-Depends: debhelper (>= 9), dh-python,
+Build-Depends: debhelper-compat (= 13),
+               dh-python,
 {%- for dependency in build_depends|sort %}
                {{dependency}},{% endfor %}
 Standards-Version: 4.5.0

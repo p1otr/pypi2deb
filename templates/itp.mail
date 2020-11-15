@@ -15,7 +15,6 @@ Owner: {{maintainer}}
   Description     : {{short_desc}}
 
 Binary package names:{% if 'python3' in interpreters %} python3-{{src_name}}{% endif %}
-{%- if 'python' in interpreters %} python-{{src_name}}{% endif %}
 {%- if 'pypy' in interpreters %} pypy-{{src_name}}{% endif %}
 
 {{long_desc}}

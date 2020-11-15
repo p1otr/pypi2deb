@@ -185,8 +185,6 @@ def update_ctx(dpath, ctx):
 
             for fname in file_names:
                 if fname.endswith('.pyx'):
-                    if 'python' in ctx['interpreters']:
-                        ctx['build_depends'].add('cython')
                     if 'python3' in ctx['interpreters']:
                         ctx['build_depends'].add('cython3')
                     for ext in ('c', 'cpp'):
@@ -225,8 +223,6 @@ def docs(dpath, ctx, env):
             docs_pkg = 'python-{}-doc'
         elif 'python3' in ctx['interpreters']:
             docs_pkg = 'python3-{}'
-        else:
-            docs_pkg = 'python-{}'
         docs_pkg = docs_pkg.format(ctx['src_name'])
         if 'examples_dir' in docs:
             # TODO: should we extend this file only if it exists?
@@ -323,9 +319,6 @@ def control(dpath, ctx, env):
                     for interpreter in ctx['interpreters']:
                         ctx['build_depends'].add('{}-setuptools'.format(interpreter))
 
-    if 'python' in ctx['interpreters']:
-        ctx['build_depends'].add(
-            'python-all%s' % ('-dev' if ctx['binary_arch'] == 'any' else ''))
     if 'python3' in ctx['interpreters']:
         ctx['build_depends'].add(
             'python3-all%s' % ('-dev' if ctx['binary_arch'] == 'any' else ''))

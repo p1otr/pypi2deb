@@ -10,7 +10,7 @@ features
 ~~~~~~~~
 
 * uses PyPI metadata
-* supports Python 2.X, 3.X and PyPy
+* supports Python 3.X and PyPy
 * guesses build dependencies
 * reuses existing Debian package names if already packaged in Debian
 * creates -doc package with Sphinx regenerated documentation
@@ -78,7 +78,7 @@ ctx values
 * `distribution` - Debian's suite
 * `exports` - variables exported in ``debian/rules``
 * `homepage` - project's homepage
-* `interpreters` - supported Python interpreters (python, python3, pypy)
+* `interpreters` - supported Python interpreters (python3, pypy)
 * `license` - license's full text
 * `license_name` - license name
 * `maintainer` - maintainer's full name and email

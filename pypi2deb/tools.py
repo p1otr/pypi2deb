@@ -140,14 +140,4 @@ def _load_package_names():
     else:
         for key, details in data.items():
             result[key.lower()] = details[0]['dependency'].replace('python3-', '')
-    try:
-        data2 = load('cpython2')
-    except Exception as err:
-        log.warn('cannot load pydist names: %s', err)
-        data2 = {}
-    else:
-        for key, details in data2.items():
-            key = key.lower()
-            if key not in result:
-                result[key] = details[0]['dependency'].replace('python-', '')
     return result

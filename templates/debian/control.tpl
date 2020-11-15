@@ -15,17 +15,6 @@ Homepage: {{homepage}}{% endif %}
 Vcs-{{vcs_name}}: {{vcs_src}}{% endif %}
 {%- if vcs_browser %}
 Vcs-Browser: {{vcs_browser}}{% endif %}
-{%- if 'python' in interpreters %}
-
-Package: python-{{src_name}}
-Architecture: {{binary_arch}}
-Depends: ${misc:Depends}, ${python:Depends},{% if binary_arch == 'any' %} ${shlibs:Depends},{% endif %}
-{%- for dependency in python2_depends %}
-         {{dependency}},{% endfor %}
-Recommends: ${python:Recommends}
-Suggests: ${python:Suggests}
-Description: {{short_desc}} - Python 2.X
-{{long_desc}}{% endif %}
 {%- if 'python3' in interpreters %}
 
 Package: python3-{{src_name}}

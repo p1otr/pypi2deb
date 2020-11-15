@@ -123,8 +123,6 @@ class Converter:
                     log.debug('%s %s: skipping - dsc file already exists', name, version)
                     continue
 
-                if args.no_python2:
-                    ctx['interpreters'].discard('python')
                 if args.no_pypy:
                     ctx['interpreters'].discard('pypy')
                 if args.pypy:
@@ -236,9 +234,6 @@ if __name__ == '__main__':
     filters.add_argument('--python3', action='store_true',
                          default=environ.get('PYPI2DEB_PYTHON3') == '1',
                          help='limit to Python 3.X packages only')
-    filters.add_argument('--no-python2', action='store_true',
-                         default=environ.get('PYPI2DEB_NO_PYTHON2') == '1',
-                         help='do not generate Python 2.X packages')
     filters.add_argument('--pypy', action='store_true',
                          default=environ.get('PYPI2DEB_PYPY') == '1',
                          help='limit to PyPy packages only')

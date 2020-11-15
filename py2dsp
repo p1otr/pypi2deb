@@ -24,6 +24,7 @@ import logging
 import argparse
 import asyncio
 import sys
+import shutil
 from os import environ, getcwd, makedirs
 from os.path import abspath, exists, isdir, join
 from shutil import rmtree
@@ -50,6 +51,7 @@ def main(args):
         name = parsed.get('name') or args.name
         ctx = yield from get_pypi_info(name)
         ctx = parse_pypi_info(ctx)
+        shutil.copy(fpath, args.root)
     else:  # download from PyPI
         parsed = parse_filename(args.name)
         version = parsed.get('version')

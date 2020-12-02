@@ -387,7 +387,7 @@ def changelog(dpath, ctx, env):
 def copyright(dpath, ctx, env):
     if not ctx.get('deb_copyright'):
         ctx['deb_copyright'] = "{} © {}".format(datetime.now().year, ctx['creator'])
-    if ctx['license_name'] == 'Apache 2':
+    if ctx['license_name'] in ('Apache 2', 'Apache 2.0'):
         ctx['license_name'] = 'Apache2'
         ctx['license'] = ' See /usr/share/common-licenses/Apache-2.0'
     if not ctx.get('deb_license_name'):

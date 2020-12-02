@@ -19,6 +19,7 @@ git checkout -b upstream
 echo debian > .git/info/exclude
 git add .
 git commit -m "import ${TARBALL}"
+git tag upstream/${VERSION}
 pristine-tar commit ../${TARBALL} upstream
 
 git checkout -b debian/master

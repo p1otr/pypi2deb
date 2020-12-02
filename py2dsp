@@ -25,7 +25,7 @@ import argparse
 import asyncio
 import sys
 import shutil
-from os import environ, getcwd, makedirs
+from os import environ, getcwd, makedirs, unlink
 from os.path import abspath, exists, isdir, join
 from shutil import rmtree
 from pypi2deb import VERSION
@@ -78,6 +78,8 @@ def main(args):
     yield from debianize(dpath, ctx, args.profile)
     yield from execute(['dpkg-buildpackage', '-S', '-us', '-uc', '-nc', '-d',
                         '-I.git', '-i.git'], dpath)
+    # workaround for https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=845436
+    unlink(join(dpath, 'debian/files'))
     if args.build:
         yield from execute(['dpkg-buildpackage', '-b'], dpath)
 

@@ -8,7 +8,7 @@ Build-Depends: debhelper-compat (= 13),
                dh-python,
 {%- for dependency in build_depends|sort %}
                {{dependency}},{% endfor %}
-Standards-Version: 4.5.0
+Standards-Version: 4.5.1
 {%- if homepage %}
 Homepage: {{homepage}}{% endif %}
 {%- if vcs_name and vcs_src %}

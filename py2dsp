@@ -51,6 +51,7 @@ def main(args):
         name = parsed.get('name') or args.name
         ctx = yield from get_pypi_info(name)
         ctx = parse_pypi_info(ctx)
+        ctx['name'], ctx['version'] = name, version
         shutil.copy(fpath, args.root)
     else:  # download from PyPI
         parsed = parse_filename(args.name)

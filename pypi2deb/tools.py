@@ -26,6 +26,7 @@ import tarfile
 from datetime import datetime
 from os.path import exists, join
 from shlex import split
+from shutil import rmtree
 from pypi2deb.decorators import cache
 from dhpython.pydist import load, safe_name
 
@@ -76,6 +77,10 @@ def unpack(fpath, destdir='.', dname=None):
             tar.extractall(destdir, members)
         if dname and dname != dirname:
             os.rename(join(destdir, dirname), dst_dpath)
+
+        upstream_debian = os.path.join(dst_dpath, 'debian')
+        if os.path.exists(upstream_debian):
+            rmtree(upstream_debian)
         return dst_dpath
 
 

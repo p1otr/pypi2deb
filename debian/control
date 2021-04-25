@@ -17,7 +17,8 @@ Depends: ${misc:Depends}, ${python3:Depends},
  python3-aiohttp (>= 0.17),
  python3-jinja2,
  python3-debian,
- python3-redis
+ python3-redis,
+ python3-github,
 Recommends:
  python3-msgpack
 Suggests:
@@ -30,7 +31,7 @@ Suggests:
  python3-sphinx
 Description: PyPI to Debian converter
  This package provides these tools:
-  * py2dsp - converts PyPI package to Debian source package
+  * py2dsp - converts PyPI/GitHub package to Debian source package
   * pypi2debian - converts PyPI repository to Debian repository
  .
  Features:

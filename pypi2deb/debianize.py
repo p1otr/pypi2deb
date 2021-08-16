@@ -25,7 +25,7 @@ import tomllib
 from configparser import ConfigParser
 from datetime import datetime
 from os import access, chmod, environ, listdir, makedirs, walk, X_OK
-from os.path import abspath, exists, isdir, join
+from os.path import abspath, exists, isdir, join, dirname
 from shutil import copy
 
 from pypi2deb import VERSION, OVERRIDES_PATH, PROFILES_PATH, TEMPLATES_PATH
@@ -155,6 +155,9 @@ async def debianize(dpath, ctx, profile=None):
         itp_mail(dpath, ctx, env)
     copyright(dpath, ctx, env)
     watch(dpath, ctx, env)
+    # Currently only Github is supported for DEP-12
+    if 'github' in ctx:
+        upstream__metadata(dpath, ctx, env)
     clean(dpath, ctx, env)
 
     # invoke post hooks
@@ -240,7 +243,7 @@ def docs(dpath, ctx, env):
 
 
 def _render_template(func):
-    name = func.__name__
+    name = func.__name__.replace('__', '/')
 
     def _template(dpath, ctx, env, *args, **kwargs):
         fpath = join(dpath, 'debian', name)
@@ -249,6 +252,10 @@ def _render_template(func):
             return
         ctx = func(dpath, ctx, env, *args, **kwargs)
         tpl = env.get_template('debian/{}.tpl'.format(name))
+
+        if not isdir(dirname(fpath)):
+            makedirs(dirname(fpath))
+
         with open(fpath, 'w', encoding='utf-8') as fp:
             fp.write(tpl.render(ctx))
     return _template
@@ -457,6 +464,11 @@ def copyright(dpath, ctx, env):
 
 @_render_template
 def watch(dpath, ctx, env):
+    return ctx
+
+@_render_template
+def upstream__metadata(dpath, ctx, env):
+    """Render debian/upstream/metadata according to DEP-12."""
     return ctx
 
 

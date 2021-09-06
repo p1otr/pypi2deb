@@ -1,3 +1,9 @@
+pypi2deb (2.20180805) UNRELEASED; urgency=medium
+
+  * Trim trailing whitespace.
+
+ -- Debian Janitor <janitor@jelmer.uk>  Mon, 06 Sep 2021 10:42:33 -0000
+
 pypi2deb (2.20180804) unstable; urgency=medium
 
   [ Oliver Okrongli ]

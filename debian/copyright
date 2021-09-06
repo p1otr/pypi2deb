@@ -1,4 +1,4 @@
-Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: pypi2deb
 Upstream-Contact: Piotr Ożarowski <piotr@debian.org>
 Source: https://github.com/p1otr/pypi2deb

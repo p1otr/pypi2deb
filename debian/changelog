@@ -5,6 +5,7 @@ pypi2deb (2.20180805) UNRELEASED; urgency=medium
   * Bump debhelper from deprecated 9 to 13.
   * Set debhelper-compat version in Build-Depends.
   * Use canonical URL in Vcs-Git.
+  * Update standards version to 4.2.1, no changes needed.
 
  -- Debian Janitor <janitor@jelmer.uk>  Mon, 06 Sep 2021 10:42:33 -0000
 

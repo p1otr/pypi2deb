@@ -1,3 +1,11 @@
+pypi2deb (2.20180805) UNRELEASED; urgency=medium
+
+  * Remove constraints unnecessary since buster:
+    + Build-Depends: Drop versioned constraint on python3.
+    + pypi2deb: Drop versioned constraint on python3-aiohttp in Depends.
+
+ -- Debian Janitor <janitor@jelmer.uk>  Tue, 12 Oct 2021 02:44:48 -0000
+
 pypi2deb (2.20180804) unstable; urgency=medium
 
   [ Oliver Okrongli ]

@@ -7,8 +7,7 @@ export {{key}}={{value}}{% endfor %}
 	dh $@ --with {{with}} --buildsystem=pybuild
 {%- if docs and docs.sphinx_dir %}
 
-override_dh_auto_build-indep:
-	dh_auto_build -i
+execute_after_dh_auto_build-indep:
 ifeq (,$(filter nodoc,$(DEB_BUILD_OPTIONS)))
 	cd {{docs.sphinx_dir}} && \
 	PYTHONPATH=$(CURDIR) http_proxy='http://127.0.0.1:9/' https_proxy='https://127.0.0.1:9/' \

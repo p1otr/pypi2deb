@@ -68,6 +68,7 @@ def main(args):
         name = ctx['name']
         version = ctx['version']
         if args.github:
+            ctx['github'] = args.github
             fname = yield from github_download(name, args.github, version=version, destdir=args.root)
         else:
             fname = yield from download(name, version=version, destdir=args.root)

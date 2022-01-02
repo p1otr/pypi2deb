@@ -32,6 +32,9 @@ if grep -q SALSA_TOKEN $HOME/.devscripts
 then
   salsa --group python-team/packages --kgb --irc-channel=debian-python-changes --tagpending create_repo ${NAME}
   echo 'I: repository created on Salsa.debian.org'
+  git push --all --set-upstream
+  git push --tags
+  echo 'I: pushed to salsa the current package and tags'
 else
   echo 'I: to create remote repository go to https://salsa.debian.org/python-team/packages and click on "New project" link'
   echo '   (https://salsa.debian.org/projects/new?namespace_id=9360)'

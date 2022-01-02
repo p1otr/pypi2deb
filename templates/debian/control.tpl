@@ -16,6 +16,7 @@ Homepage: {{homepage}}{% endif %}
 Vcs-{{vcs_name}}: {{vcs_src}}{% endif %}
 {%- if vcs_browser %}
 Vcs-Browser: {{vcs_browser}}{% endif %}
+Rules-Requires-Root: no
 {%- if 'python3' in interpreters %}
 
 Package: python3-{{src_name}}

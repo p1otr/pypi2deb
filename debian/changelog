@@ -1,6 +1,7 @@
 pypi2deb (3.20220702) UNRELEASED; urgency=medium
 
   * Add Sandro Tosi to co-maintainers
+  * Update VCS-* fields to point to Salsa
 
  -- Piotr Ożarowski <piotr@debian.org>  Fri, 01 Jul 2022 22:29:18 +0200
 

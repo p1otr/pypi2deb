@@ -1,3 +1,9 @@
+pypi2deb (3.20220702) UNRELEASED; urgency=medium
+
+  * Add Sandro Tosi to co-maintainers
+
+ -- Piotr Ożarowski <piotr@debian.org>  Fri, 01 Jul 2022 22:29:18 +0200
+
 pypi2deb (2.20180804) unstable; urgency=medium
 
   [ Oliver Okrongli ]

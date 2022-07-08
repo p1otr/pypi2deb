@@ -34,13 +34,14 @@ pypi2deb (3.20220702) UNRELEASED; urgency=medium
     upstream branches
   * debian/control:
     - run wrap-and-sort -at
+    - bump Standards-Version to 4.6.1.0 (no changes needed)
 
   [ Agathe Porte ]
   * debian: update debhelper from v9 to v13
   * control.tpl: add Rules-Requires-Root: no
   * debianize.py: remove copyright symbol
 
- -- Sandro Tosi <morph@debian.org>  Thu, 07 Jul 2022 22:44:57 -0400
+ -- Sandro Tosi <morph@debian.org>  Thu, 07 Jul 2022 22:45:32 -0400
 
 pypi2deb (2.20180804) unstable; urgency=medium
 

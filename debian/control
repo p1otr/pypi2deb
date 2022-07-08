@@ -6,7 +6,7 @@ Uploaders: Sandro Tosi <morph@debian.org>,
 Build-Depends: debhelper-compat (= 13),
                dh-python,
                python3 (>= 3.4.2),
-Standards-Version: 4.2.0
+Standards-Version: 4.6.1.0
 Homepage: https://github.com/p1otr/pypi2deb
 Vcs-Git: https://salsa.debian.org/python-team/tools/pypi2deb.git
 Vcs-Browser: https://salsa.debian.org/python-team/tools/pypi2deb

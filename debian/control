@@ -2,8 +2,10 @@ Source: pypi2deb
 Section: python
 Priority: optional
 Maintainer: Piotr Ożarowski <piotr@debian.org>
-Uploaders: Sandro Tosi <morph@debian.org>
-Build-Depends: debhelper-compat (= 13), dh-python, python3 (>= 3.4.2)
+Uploaders: Sandro Tosi <morph@debian.org>,
+Build-Depends: debhelper-compat (= 13),
+               dh-python,
+               python3 (>= 3.4.2),
 Standards-Version: 4.2.0
 Homepage: https://github.com/p1otr/pypi2deb
 Vcs-Git: https://salsa.debian.org/python-team/tools/pypi2deb.git
@@ -11,25 +13,29 @@ Vcs-Browser: https://salsa.debian.org/python-team/tools/pypi2deb
 
 Package: pypi2deb
 Architecture: all
-Depends: ${misc:Depends}, ${python3:Depends}, 
- build-essential,
- dh-python,
- devscripts,
- python3-aiohttp (>= 0.17),
- python3-jinja2,
- python3-debian,
- python3-redis,
- python3-github,
-Recommends:
- python3-msgpack
-Suggests:
-# common build dependencies
- python-all-dev, python3-all-dev, pypy,
- python-setuptools, python3-setuptools,
- cython, cython3,
- python-nose, python3-nose,
- python-pytest, python3-pytest,
- python3-sphinx
+Depends: build-essential,
+         devscripts,
+         dh-python,
+         python3-aiohttp (>= 0.17),
+         python3-debian,
+         python3-github,
+         python3-jinja2,
+         python3-redis,
+         ${misc:Depends},
+         ${python3:Depends},
+Recommends: python3-msgpack,
+Suggests: cython,
+          cython3,
+          pypy,
+          python-all-dev,
+          python-nose,
+          python-pytest,
+          python-setuptools,
+          python3-all-dev,
+          python3-nose,
+          python3-pytest,
+          python3-setuptools,
+          python3-sphinx,
 Description: PyPI to Debian converter
  This package provides these tools:
   * py2dsp - converts PyPI/GitHub package to Debian source package

@@ -32,13 +32,15 @@ pypi2deb (3.20220702) UNRELEASED; urgency=medium
   * set github in context even if we dont pass a file on the command-line
   * Push the initial packaging to salsa (if the repo is created) and track
     upstream branches
+  * debian/control:
+    - run wrap-and-sort -at
 
   [ Agathe Porte ]
   * debian: update debhelper from v9 to v13
   * control.tpl: add Rules-Requires-Root: no
   * debianize.py: remove copyright symbol
 
- -- Sandro Tosi <morph@debian.org>  Thu, 07 Jul 2022 22:07:08 -0400
+ -- Sandro Tosi <morph@debian.org>  Thu, 07 Jul 2022 22:44:57 -0400
 
 pypi2deb (2.20180804) unstable; urgency=medium
 

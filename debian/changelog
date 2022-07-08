@@ -1,9 +1,44 @@
 pypi2deb (3.20220702) UNRELEASED; urgency=medium
 
+  [ Piotr Ożarowski ]
   * Add Sandro Tosi to co-maintainers
   * Update VCS-* fields to point to Salsa
 
- -- Piotr Ożarowski <piotr@debian.org>  Fri, 01 Jul 2022 22:29:18 +0200
+  [ Sandro Tosi ]
+  * template: set Standards-Version to 4.5.0
+  * template: set dh compat to 13, via debhelper-compat b-d; Closes: #966104
+  * profiles: PAPT and DPMT converged into DPT, so update the profiles
+    accordingly
+  * Remove support for python2; Closes: #966103
+  * When using a local tarball, copy it in the destination directory
+  * template: set Standards-Version to 4.5.1
+  * template: bump d/watch version to 4
+  * recognize both 'Apache 2' and 'Apache 2.0'
+  * hook: tag upstream version after import, as done by gbp import-orig
+  * py2dsp: remove spurious debian/files, left behind dpkg-buildpackage due to
+    #845436
+  * py2dsp: When using a local tarball, gather name and version from it
+  * template: Copy d-devel and d-python when submitting a new ITP
+  * template: Use a single X-Debbugs-Cc field, with 2 addresses
+  * unpack: remove the upstream debian/ directory, if present
+  * Fetch upstream tarball from GitHub
+  * Add rudimentary support for autopkgtests
+  * Create repo on salsa if SALSA_TOKEN is setup in ~/.devscripts
+  * template: bump Standards-Version to 4.6.0.1
+  * Advertise py2dsp as the tool that created the debianization (in commit msg
+    and d/changelog)
+  * Create the salsa repo enabling the tagpending webhook too
+  * build doc using execute_after
+  * set github in context even if we dont pass a file on the command-line
+  * Push the initial packaging to salsa (if the repo is created) and track
+    upstream branches
+
+  [ Agathe Porte ]
+  * debian: update debhelper from v9 to v13
+  * control.tpl: add Rules-Requires-Root: no
+  * debianize.py: remove copyright symbol
+
+ -- Sandro Tosi <morph@debian.org>  Thu, 07 Jul 2022 22:07:08 -0400
 
 pypi2deb (2.20180804) unstable; urgency=medium
 

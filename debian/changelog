@@ -1,4 +1,4 @@
-pypi2deb (3.20220702) UNRELEASED; urgency=medium
+pypi2deb (3.20220707) unstable; urgency=medium
 
   [ Piotr Ożarowski ]
   * Add Sandro Tosi to co-maintainers
@@ -43,7 +43,7 @@ pypi2deb (3.20220702) UNRELEASED; urgency=medium
   * control.tpl: add Rules-Requires-Root: no
   * debianize.py: remove copyright symbol
 
- -- Sandro Tosi <morph@debian.org>  Thu, 07 Jul 2022 22:46:27 -0400
+ -- Sandro Tosi <morph@debian.org>  Thu, 07 Jul 2022 22:53:34 -0400
 
 pypi2deb (2.20180804) unstable; urgency=medium
 

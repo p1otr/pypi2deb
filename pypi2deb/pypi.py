@@ -98,13 +98,11 @@ def parse_pypi_info(data):
     for i in classifiers:
         if i.startswith('Programming Language :: Python :: 3'):
             result['interpreters'].add('python3')
-        elif i.startswith('Programming Language :: Python :: 2'):
-            result['interpreters'].add('python')
     if 'Programming Language :: Python :: Implementation :: PyPy' in classifiers:
         result['interpreters'].add('pypy')
     if not result['interpreters']:
-        # assume it's Python 2.X only
-        result['interpreters'].add('python')
+        # assume it's Python 3 only
+        result['interpreters'].add('python3')
 
     return result
 

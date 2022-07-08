@@ -4,27 +4,19 @@ Priority: optional
 Maintainer: {{maintainer}}
 {%- if uploaders %}
 Uploaders: {{uploaders}}{% endif %}
-Build-Depends: debhelper (>= 9), dh-python,
+Build-Depends: debhelper-compat (= 13),
+               dh-python,
 {%- for dependency in build_depends|sort %}
                {{dependency}},{% endfor %}
-Standards-Version: 4.2.0
+Standards-Version: 4.6.0.1
+Testsuite: autopkgtest-pkg-python
 {%- if homepage %}
 Homepage: {{homepage}}{% endif %}
 {%- if vcs_name and vcs_src %}
 Vcs-{{vcs_name}}: {{vcs_src}}{% endif %}
 {%- if vcs_browser %}
 Vcs-Browser: {{vcs_browser}}{% endif %}
-{%- if 'python' in interpreters %}
-
-Package: python-{{src_name}}
-Architecture: {{binary_arch}}
-Depends: ${misc:Depends}, ${python:Depends},{% if binary_arch == 'any' %} ${shlibs:Depends},{% endif %}
-{%- for dependency in python2_depends %}
-         {{dependency}},{% endfor %}
-Recommends: ${python:Recommends}
-Suggests: ${python:Suggests}
-Description: {{short_desc}} - Python 2.X
-{{long_desc}}{% endif %}
+Rules-Requires-Root: no
 {%- if 'python3' in interpreters %}
 
 Package: python3-{{src_name}}

@@ -1,7 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: {{name}}
 Upstream-Contact: {{author}}
-Source: {{homepage}}
+Source: {{github if github else homepage}}
 
 Files: *
 Copyright: {{copyright}}

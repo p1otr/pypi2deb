@@ -24,11 +24,13 @@ import logging
 import argparse
 import asyncio
 import sys
-from os import environ, getcwd, makedirs
+import shutil
+from os import environ, getcwd, makedirs, unlink
 from os.path import abspath, exists, isdir, join
 from shutil import rmtree
 from pypi2deb import VERSION
 from pypi2deb.debianize import debianize
+from pypi2deb.github import github_download
 from pypi2deb.pypi import get_pypi_info, parse_pypi_info, download
 from pypi2deb.tools import execute, unpack, parse_filename, pkg_name
 
@@ -50,6 +52,10 @@ def main(args):
         name = parsed.get('name') or args.name
         ctx = yield from get_pypi_info(name)
         ctx = parse_pypi_info(ctx)
+        ctx['name'], ctx['version'] = name, version
+        if args.github:
+            ctx['github'] = args.github
+        shutil.copy(fpath, args.root)
     else:  # download from PyPI
         parsed = parse_filename(args.name)
         version = parsed.get('version')
@@ -61,7 +67,11 @@ def main(args):
             exit(1)
         name = ctx['name']
         version = ctx['version']
-        fname = yield from download(name, version=version, destdir=args.root)
+        if args.github:
+            ctx['github'] = args.github
+            fname = yield from github_download(name, args.github, version=version, destdir=args.root)
+        else:
+            fname = yield from download(name, version=version, destdir=args.root)
         fpath = join(args.root, fname)
 
     ctx['root'] = args.root
@@ -76,6 +86,8 @@ def main(args):
     yield from debianize(dpath, ctx, args.profile)
     yield from execute(['dpkg-buildpackage', '-S', '-us', '-uc', '-nc', '-d',
                         '-I.git', '-i.git'], dpath)
+    # workaround for https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=845436
+    unlink(join(dpath, 'debian/files'))
     if args.build:
         yield from execute(['dpkg-buildpackage', '-b'], dpath)
 
@@ -109,6 +121,10 @@ if __name__ == '__main__':
     parser.add_argument('--application', action='store_true',
                         default=environ.get('PY2DSP_APPLICATION', '0') == '1',
                         help='this is an application rather than module')
+    parser.add_argument('--profile', action='store',
+                        help='load default values from profile.json file (if available)')
+    parser.add_argument('--github', '--gh',  default=None,
+                        help='fetch the package from GitHub instead of PyPI')
 
     changelog = parser.add_argument_group('changelog', 'debian/changelog specific settings')
     changelog.add_argument('--distribution', action='store',
@@ -121,13 +137,12 @@ if __name__ == '__main__':
                            default=environ.get('PY2DSP_MESSAGE', 'converte0~py2deb'),
                            help='Debian changelog message')
 
-    parser.add_argument('--profile', action='store',
-                        help='load default values from profile.json file (if available)')
-
-    parser.add_argument('name', default=None,
+    parser.add_argument('name', default=None, nargs='?',
                         help='Python source name or tarball')
 
     args = parser.parse_args()
+    if not args.name and args.github:
+        args.name = args.github.split('/')[-1]
 
     if args.verbose:
         logging.getLogger('pypi2deb').setLevel(logging.DEBUG)
@@ -140,6 +155,10 @@ if __name__ == '__main__':
         log.setLevel(logging.INFO)
     log.debug('version: {}'.format(VERSION))
     log.debug(sys.argv)
+
+    if args.profile in ('dpmt', 'papt'):
+        logging.warning("'dpmt' and 'papt' profiles have been replaced by the 'dpt' profile")
+        args.profile = 'dpt'
 
     loop = asyncio.get_event_loop()
     try:

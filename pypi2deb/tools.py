@@ -26,6 +26,7 @@ import tarfile
 from datetime import datetime
 from os.path import exists, join
 from shlex import split
+from shutil import rmtree
 from pypi2deb.decorators import cache
 from dhpython.pydist import load, safe_name
 
@@ -76,6 +77,10 @@ def unpack(fpath, destdir='.', dname=None):
             tar.extractall(destdir, members)
         if dname and dname != dirname:
             os.rename(join(destdir, dirname), dst_dpath)
+
+        upstream_debian = os.path.join(dst_dpath, 'debian')
+        if os.path.exists(upstream_debian):
+            rmtree(upstream_debian)
         return dst_dpath
 
 
@@ -140,14 +145,4 @@ def _load_package_names():
     else:
         for key, details in data.items():
             result[key.lower()] = details[0]['dependency'].replace('python3-', '')
-    try:
-        data2 = load('cpython2')
-    except Exception as err:
-        log.warn('cannot load pydist names: %s', err)
-        data2 = {}
-    else:
-        for key, details in data2.items():
-            key = key.lower()
-            if key not in result:
-                result[key] = details[0]['dependency'].replace('python-', '')
     return result

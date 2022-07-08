@@ -1,3 +1,5 @@
+**Note: This project is now under collaborative maitenance at https://salsa.debian.org/python-team/tools/pypi2deb , this repository is now archived.**
+
 PyPI to Debian
 ==============
 

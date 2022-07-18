@@ -26,6 +26,7 @@ from os.path import join, exists
 
 import aiohttp
 from github import Github
+from github.GithubException import UnknownObjectException
 
 
 @asyncio.coroutine
@@ -36,16 +37,20 @@ def github_download(name, github_url, version=None, destdir='.'):
     if not name:
         name = repo.name
 
-    latest_release = repo.get_latest_release()
+    try:
+        tag_name = repo.get_latest_release().tag_name
+    except UnknownObjectException:
+        # Some projects do not use Github Releases, check the latest tag instead
+        tag_name = repo.get_tags()[0].name
 
     if not version:
         # TODO: are there other special cases? vx.y.z tag gets rewritten as x.y.z
-        version = latest_release.tag_name.lstrip('v')
+        version = tag_name.lstrip('v')
 
     # cant use this for now, chk https://github.com/PyGithub/PyGithub/issues/1871
     # download_url = latest_release.tarball_url
     # so let's "forge" the right URL here
-    download_url = f"{github_url}/archive/{latest_release.tag_name}.tar.gz"
+    download_url = f"{github_url}/archive/{tag_name}.tar.gz"
 
     fname = f'{name}_{version}.orig.tar.gz'
 

@@ -1,3 +1,10 @@
+pypi2deb (3.20220708) UNRELEASED; urgency=medium
+
+  [ Agathe Porte ]
+  * github: use last tag if no release found
+
+ -- Sandro Tosi <morph@debian.org>  Sun, 17 Jul 2022 23:27:01 -0400
+
 pypi2deb (3.20220707) unstable; urgency=medium
 
   [ Piotr Ożarowski ]

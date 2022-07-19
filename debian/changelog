@@ -3,7 +3,10 @@ pypi2deb (3.20220708) UNRELEASED; urgency=medium
   [ Agathe Porte ]
   * github: use last tag if no release found
 
- -- Sandro Tosi <morph@debian.org>  Sun, 17 Jul 2022 23:27:01 -0400
+  [ Sandro Tosi ]
+  * template: bump Standards-Version to 4.6.1.0
+
+ -- Sandro Tosi <morph@debian.org>  Mon, 18 Jul 2022 23:37:12 -0400
 
 pypi2deb (3.20220707) unstable; urgency=medium
 

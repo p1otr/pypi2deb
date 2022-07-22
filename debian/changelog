@@ -1,3 +1,11 @@
+pypi2deb (3.20220722) UNRELEASED; urgency=medium
+
+  * debian/rules
+    - use the same reportbug trick to make sure the internal version is in sync
+      with the package version
+
+ -- Sandro Tosi <morph@debian.org>  Thu, 21 Jul 2022 23:17:56 -0400
+
 pypi2deb (3.20220721) unstable; urgency=medium
 
   [ Agathe Porte ]

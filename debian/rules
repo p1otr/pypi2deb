@@ -1,8 +1,18 @@
 #! /usr/bin/make -f
 
+include /usr/share/dpkg/pkg-info.mk
+
+VERSION := $(shell python3 -c "import pypi2deb; print(pypi2deb.VERSION)")
+
 %:
 	dh $@ --with python3
 
 override_dh_auto_clean:
+	# Test if versions are synchronized (only if releasing); this will bomb if not synced
+	if [ "$(DEB_DISTRIBUTION)" != "UNRELEASED" -a "$(VERSION)" != "$(DEB_VERSION)" ] ; \
+	then \
+		echo 'Please update VERSION variable in pypi2deb/__init__.py'; exit 1 ; \
+	fi
+
 	dh_auto_clean
 	find . -type d -name __pycache__ -print0 | xargs --null --no-run-if-empty rm -rf

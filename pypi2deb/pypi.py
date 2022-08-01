@@ -115,12 +115,13 @@ async def download(name, version=None, destdir='.'):
     if not version:
         version = details['info']['version']
 
-    release = details['releases'].get(version, {})
-    if not release:
+    package_urls = details['urls']
+    if not package_urls:
         log.debug('missing release of %s %s on PyPI', name, version)
         raise Exception('missing release')
+
     try:
-        release = next((i for i in release if i['python_version'] == 'source'))
+        release = next((i for i in package_urls if i['python_version'] == 'source'))
     except StopIteration:
         release = None
 

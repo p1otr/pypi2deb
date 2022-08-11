@@ -7,8 +7,9 @@ pypi2deb (3.20220722) UNRELEASED; urgency=medium
 
   [ Agathe Porte ]
   * github: remove trailing `/` in repo url
+  * github: add some logs while performing operations
 
- -- Sandro Tosi <morph@debian.org>  Thu, 11 Aug 2022 09:30:35 -0400
+ -- Sandro Tosi <morph@debian.org>  Thu, 11 Aug 2022 10:02:29 -0400
 
 pypi2deb (3.20220721) unstable; urgency=medium
 

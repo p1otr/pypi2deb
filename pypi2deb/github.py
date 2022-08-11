@@ -21,6 +21,7 @@
 # PyGithub doesnt support (yet) asyncio, and there's only a prototype of a github
 # client supporting it, so we're gonna do it the old way
 
+import logging
 import asyncio
 from os.path import join, exists
 
@@ -28,11 +29,14 @@ import aiohttp
 from github import Github
 from github.GithubException import UnknownObjectException
 
+log = logging.getLogger('pypi2deb')
+
 
 @asyncio.coroutine
 def github_download(name, github_url, version=None, destdir='.'):
     g = Github()
     repo_name = github_url.replace('https://github.com/', '').rstrip('/')
+    log.debug(f"Calling github get_repo with arg {repo_name}")
     repo = g.get_repo(repo_name)
 
     if not name:

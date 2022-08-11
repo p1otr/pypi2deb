@@ -32,7 +32,8 @@ from github.GithubException import UnknownObjectException
 @asyncio.coroutine
 def github_download(name, github_url, version=None, destdir='.'):
     g = Github()
-    repo = g.get_repo(github_url.replace('https://github.com/', ''))
+    repo_name = github_url.replace('https://github.com/', '').rstrip('/')
+    repo = g.get_repo(repo_name)
 
     if not name:
         name = repo.name

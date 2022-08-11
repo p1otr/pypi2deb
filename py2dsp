@@ -69,6 +69,7 @@ def main(args):
         version = ctx['version']
         if args.github:
             ctx['github'] = args.github
+            log.debug(f"Calling github_download with {name}, {args.github}, {version}, {args.root}")
             fname = yield from github_download(name, args.github, version=version, destdir=args.root)
         else:
             fname = yield from download(name, version=version, destdir=args.root)
@@ -81,6 +82,7 @@ def main(args):
         dpath = fpath
     else:
         dirname = '{}-{}'.format(src_name, version)
+        log.debug(f"Unpacking {fpath}")
         dpath = unpack(fpath, args.root, dirname)
 
     yield from debianize(dpath, ctx, args.profile)

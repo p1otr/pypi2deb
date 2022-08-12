@@ -55,7 +55,7 @@ def github_download(name, github_url, version=None, destdir='.'):
     # cant use this for now, chk https://github.com/PyGithub/PyGithub/issues/1871
     # download_url = latest_release.tarball_url
     # so let's "forge" the right URL here
-    download_url = f"{github_url}/archive/{tag_name}.tar.gz"
+    download_url = f"{github_url}/archive/refs/tags/{tag_name}.tar.gz"
 
     fname = f'{name}_{version}.orig.tar.gz'
 

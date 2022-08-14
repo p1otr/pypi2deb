@@ -3,7 +3,7 @@ set -efu
 
 echo "ERROR: Adapt this autopkgtests script to the package and remove this line" ; exit 1
 
-pys="$(py3versions -r 2> /dev/null)"
+pys="$(py3versions -s 2> /dev/null)"
 
 cp -a tests "$AUTOPKGTEST_TMP"
 cd "$AUTOPKGTEST_TMP"

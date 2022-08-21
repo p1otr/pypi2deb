@@ -24,8 +24,6 @@ Architecture: {{binary_arch}}
 Depends: ${misc:Depends}, ${python3:Depends},{% if binary_arch == 'any' %} ${shlibs:Depends},{% endif %}
 {%- for dependency in python3_depends %}
          {{dependency}},{% endfor %}
-Recommends: ${python3:Recommends}
-Suggests: ${python3:Suggests}
 Description: {{short_desc}}
 {{long_desc}}{% endif %}
 {%- if 'pypy' in interpreters %}

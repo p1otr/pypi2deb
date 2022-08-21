@@ -40,22 +40,19 @@ async def get_pypi_info(name, version=None):
     if version:
         url += '/' + version
     url += '/json'
-    session = None
-    try:
-        session = aiohttp.ClientSession()
-        response = await session.get(url)
-    except Exception as err:
-        log.error('invalid project name: {} ({})'.format(name, err))
-    else:
+
+    async with aiohttp.ClientSession() as session:
+        try:
+            response = await session.get(url)
+        except Exception as err:
+            log.error('invalid project name: {} ({})'.format(name, err))
+            return
         try:
             result = await response.json()
         except Exception as err:
             log.warn('cannot download %s %s details from PyPI: %r', name, version, err)
             return
         return result
-    finally:
-        if session is not None:
-            await session.close()
 
 
 def parse_pypi_info(data):
@@ -141,16 +138,11 @@ async def download(name, version=None, destdir='.'):
     if exists(fpath):
         return fname
 
-    session = None
-    try:
-        session = aiohttp.ClientSession()
+    async with aiohttp.ClientSession() as session:
         response = await session.get(release['url'])
         with open(fpath if ext == orig_ext else join(destdir, release['filename']), 'wb') as fp:
             data = await response.read()
             fp.write(data)
-    finally:
-        if session is not None:
-            await session.close()
 
     if orig_ext != ext:
         cmd = ['mk-origtargz', '--rename', '--compression', 'xz',

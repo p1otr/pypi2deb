@@ -35,8 +35,7 @@ PYPI_XMLRPC_URL = environ.get('PYPI_XMLRPC_URL', 'https://pypi.org/pypi')
 log = logging.getLogger('pypi2deb')
 
 
-@asyncio.coroutine
-def get_pypi_info(name, version=None):
+async def get_pypi_info(name, version=None):
     url = PYPI_JSON_URL + '/' + name
     if version:
         url += '/' + version
@@ -44,19 +43,19 @@ def get_pypi_info(name, version=None):
     session = None
     try:
         session = aiohttp.ClientSession()
-        response = yield from session.get(url)
+        response = await session.get(url)
     except Exception as err:
         log.error('invalid project name: {} ({})'.format(name, err))
     else:
         try:
-            result = yield from response.json()
+            result = await response.json()
         except Exception as err:
             log.warn('cannot download %s %s details from PyPI: %r', name, version, err)
             return
         return result
     finally:
         if session is not None:
-            yield from session.close()
+            await session.close()
 
 
 def parse_pypi_info(data):
@@ -112,9 +111,8 @@ def parse_pkg_info(fpath):
     raise NotImplementedError()  # FIXME
 
 
-@asyncio.coroutine
-def download(name, version=None, destdir='.'):
-    details = yield from get_pypi_info(name, version)
+async def download(name, version=None, destdir='.'):
+    details = await get_pypi_info(name, version)
     if not details:
         raise Exception('cannot get PyPI project details for {}'.format(name))
 
@@ -146,13 +144,13 @@ def download(name, version=None, destdir='.'):
     session = None
     try:
         session = aiohttp.ClientSession()
-        response = yield from session.get(release['url'])
+        response = await session.get(release['url'])
         with open(fpath if ext == orig_ext else join(destdir, release['filename']), 'wb') as fp:
-            data = yield from response.read()
+            data = await response.read()
             fp.write(data)
     finally:
         if session is not None:
-            yield from session.close()
+            await session.close()
 
     if orig_ext != ext:
         cmd = ['mk-origtargz', '--rename', '--compression', 'xz',
@@ -160,7 +158,7 @@ def download(name, version=None, destdir='.'):
                '--directory', destdir,
                '--repack', join(destdir, release['filename'])]
         # TODO: add --copyright-file if overriden copyright file is available
-        yield from execute(cmd)
+        await execute(cmd)
 
     return fname
 
@@ -169,11 +167,11 @@ def download(name, version=None, destdir='.'):
 def list_packages(classifiers=None):
     client = ServerProxy(PYPI_XMLRPC_URL)
     if not classifiers:
-        # packages = yield from client.list_packages()
+        # packages = await client.list_packages()
         packages = client.list_packages()
         packages = dict.fromkeys(packages)
     else:
-        # packages = yield from client.browse(classifiers)
+        # packages = await client.browse(classifiers)
         packages = client.browse(classifiers)
         # browse returns all versions, use the latest one only
         # TODO: use LooseVersion

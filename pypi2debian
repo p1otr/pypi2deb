@@ -59,8 +59,7 @@ class Converter:
             self.loop.run_until_complete(self.run())
         # self.loop.close()
 
-    @asyncio.coroutine
-    def run(self):
+    async def run(self):
         stats_worker = asyncio.Task(self.stats_worker(), loop=self.loop)
         workers = [asyncio.Task(self.worker(), loop=self.loop)
                    for _ in range(int(self.args.jobs))]
@@ -69,9 +68,9 @@ class Converter:
         build_bin_workers = [asyncio.Task(self.build_bin_worker(), loop=self.loop)
                              for _ in range(int(self.args.bin_jobs))]
         try:
-            yield from self.queue.join()
-            yield from self.build_src_queue.join()
-            yield from self.build_bin_queue.join()
+            await self.queue.join()
+            await self.build_src_queue.join()
+            await self.build_bin_queue.join()
         finally:
             stats_worker.cancel()
             for w in workers:
@@ -90,21 +89,20 @@ class Converter:
     def build_bin(self, name, version, ctx):
         self.build_bin_queue.put_nowait((name, version, ctx))
 
-    def stats_worker(self):
+    async def stats_worker(self):
         while True:
-            yield from asyncio.sleep(10)
+            await asyncio.sleep(10)
             log.info('* pending conversion jobs: %s, src jobs: %s, build jobs: %s',
                      self.queue.qsize(), self.build_src_queue.qsize(),
                      self.build_bin_queue.qsize())
 
-    @asyncio.coroutine
-    def worker(self):
+    async def worker(self):
         args = self.args
         while True:
-            name, version = yield from self.queue.get()
+            name, version = await self.queue.get()
             try:
                 try:
-                    ctx = yield from get_pypi_info(name, version)
+                    ctx = await get_pypi_info(name, version)
                     ctx = parse_pypi_info(ctx)
                 except Exception as err:
                     log.error('%s %s: cannot load details from PyPI: %r', name, version, err)
@@ -134,7 +132,7 @@ class Converter:
                     continue
 
                 try:
-                    fname = yield from download(name, version, destdir=args.root)
+                    fname = await download(name, version, destdir=args.root)
                 except Exception as err:
                     log.error('%s %s: cannot download from PyPI: %r', name, version, err)
                     continue
@@ -152,7 +150,7 @@ class Converter:
 
                 # debianize sources
                 try:
-                    yield from debianize(dpath, ctx, args.profile)
+                    await debianize(dpath, ctx, args.profile)
                 except Exception as err:
                     log.warn('%s %s: conversion failed with: %r', name, version, err)
                     continue
@@ -165,15 +163,14 @@ class Converter:
             finally:
                 self.queue.task_done()
 
-    @asyncio.coroutine
-    def build_src_worker(self):
+    async def build_src_worker(self):
         args = self.args
         while True:
-            name, version, ctx = yield from self.build_src_queue.get()
+            name, version, ctx = await self.build_src_queue.get()
             try:
                 command = args.build_src_cmd.format(**ctx)
                 log_path = join(args.root, '{src_name}_{version}-{debian_revision}_source.log'.format(**ctx))
-                res = yield from execute(command, ctx['src_dir'], log_output=log_path)
+                res = await execute(command, ctx['src_dir'], log_output=log_path)
                 if res != 0:
                     log.error('%s %s: creating source package failed with return code %d',
                               name, version, res)
@@ -185,15 +182,14 @@ class Converter:
                           name, version, err)
             self.build_src_queue.task_done()
 
-    @asyncio.coroutine
-    def build_bin_worker(self):
+    async def build_bin_worker(self):
         args = self.args
         while True:
-            name, version, ctx = yield from self.build_bin_queue.get()
+            name, version, ctx = await self.build_bin_queue.get()
             try:
                 command = args.build_cmd.format(**ctx)
                 log_path = join(args.root, '{src_name}_{version}-{debian_revision}_build.log'.format(**ctx))
-                res = yield from execute(command, ctx['src_dir'], log_output=log_path)
+                res = await execute(command, ctx['src_dir'], log_output=log_path)
                 if res != 0:
                     log.error('%s %s: building binary failed with return code %d',
                               name, version, res)

@@ -162,11 +162,8 @@ if __name__ == '__main__':
         logging.warning("'dpmt' and 'papt' profiles have been replaced by the 'dpt' profile")
         args.profile = 'dpt'
 
-    loop = asyncio.get_event_loop()
     try:
-        loop.run_until_complete(main(args))
+        asyncio.run(main(args))
     except Exception as e:
         log.error(e, exc_info=args.verbose)
         exit(2)
-    finally:
-        loop.close()

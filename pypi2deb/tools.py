@@ -89,8 +89,7 @@ def parse_filename(name):
     return match.groupdict() if match else {}
 
 
-@asyncio.coroutine
-def execute(command, cwd=None, env=None, log_output=None):
+async def execute(command, cwd=None, env=None, log_output=None):
     """Execute external shell commad.
 
     :param cdw: currennt working directory
@@ -115,8 +114,8 @@ def execute(command, cwd=None, env=None, log_output=None):
 
     create = asyncio.create_subprocess_exec(*command, stdout=log_output, stderr=log_output,
                                             cwd=cwd, env=env)
-    proc = yield from create
-    yield from proc.wait()
+    proc = await create
+    await proc.wait()
     close and log_output.close()
 
     return proc.returncode

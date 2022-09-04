@@ -40,7 +40,7 @@ log = logging.getLogger('py2dsp')
 DESCRIPTION = 'Python source package to Debian source package converter'
 
 
-def main(args):
+async def main(args):
     log.debug('args: %s', args)
     if not exists(args.root):
         makedirs(args.root)
@@ -50,7 +50,7 @@ def main(args):
         parsed = parse_filename(fname)
         version = parsed.get('version')
         name = parsed.get('name') or args.name
-        ctx = yield from get_pypi_info(name)
+        ctx = await get_pypi_info(name)
         ctx = parse_pypi_info(ctx)
         ctx['name'], ctx['version'] = name, version
         if args.github:
@@ -60,7 +60,7 @@ def main(args):
         parsed = parse_filename(args.name)
         version = parsed.get('version')
         name = parsed.get('name') or args.name
-        ctx = yield from get_pypi_info(name, version)
+        ctx = await get_pypi_info(name, version)
         ctx = parse_pypi_info(ctx)
         if not ctx:
             log.error('invalid name: %s', args.name)
@@ -70,9 +70,9 @@ def main(args):
         if args.github:
             ctx['github'] = args.github
             log.debug(f"Calling github_download with {name}, {args.github}, {version}, {args.root}")
-            fname = yield from github_download(name, args.github, version=version, destdir=args.root)
+            fname = await github_download(name, args.github, version=version, destdir=args.root)
         else:
-            fname = yield from download(name, version=version, destdir=args.root)
+            fname = await download(name, version=version, destdir=args.root)
         fpath = join(args.root, fname)
 
     ctx['root'] = args.root
@@ -85,13 +85,13 @@ def main(args):
         log.debug(f"Unpacking {fpath}")
         dpath = unpack(fpath, args.root, dirname)
 
-    yield from debianize(dpath, ctx, args.profile)
-    yield from execute(['dpkg-buildpackage', '-S', '-us', '-uc', '-nc', '-d',
+    await debianize(dpath, ctx, args.profile)
+    await execute(['dpkg-buildpackage', '-S', '-us', '-uc', '-nc', '-d',
                         '-I.git', '-i.git'], dpath)
     # workaround for https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=845436
     unlink(join(dpath, 'debian/files'))
     if args.build:
-        yield from execute(['dpkg-buildpackage', '-b'], dpath)
+        await execute(['dpkg-buildpackage', '-b'], dpath)
 
     if args.clean:
         rmtree(dpath)
@@ -162,11 +162,8 @@ if __name__ == '__main__':
         logging.warning("'dpmt' and 'papt' profiles have been replaced by the 'dpt' profile")
         args.profile = 'dpt'
 
-    loop = asyncio.get_event_loop()
     try:
-        loop.run_until_complete(main(args))
+        asyncio.run(main(args))
     except Exception as e:
         log.error(e, exc_info=args.verbose)
         exit(2)
-    finally:
-        loop.close()

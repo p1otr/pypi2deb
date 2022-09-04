@@ -32,8 +32,7 @@ from github.GithubException import UnknownObjectException
 log = logging.getLogger('pypi2deb')
 
 
-@asyncio.coroutine
-def github_download(name, github_url, version=None, destdir='.'):
+async def github_download(name, github_url, version=None, destdir='.'):
     g = Github()
     repo_name = github_url.replace('https://github.com/', '').rstrip('/')
     log.debug(f"Calling github get_repo with arg {repo_name}")
@@ -63,15 +62,10 @@ def github_download(name, github_url, version=None, destdir='.'):
     if exists(fpath):
         return fname
 
-    session = None
-    try:
-        session = aiohttp.ClientSession()
-        response = yield from session.get(download_url)
+    async with aiohttp.ClientSession() as session:
+        response = await session.get(download_url)
         with open(fpath, 'ba') as fp:
-            data = yield from response.read()
+            data = await response.read()
             fp.write(data)
-    finally:
-        if session is not None:
-            yield from session.close()
 
     return fname

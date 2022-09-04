@@ -112,12 +112,11 @@ async def download(name, version=None, destdir='.'):
     if not details:
         raise Exception('cannot get PyPI project details for {}'.format(name))
 
-    if not version:
-        version = details['info']['version']
+    download_version = version or details['info']['version']
 
     package_urls = details['urls']
     if not package_urls:
-        log.debug('missing release of %s %s on PyPI', name, version)
+        log.debug('missing release of %s %s on PyPI', name, download_version)
         raise Exception('missing release')
 
     try:
@@ -128,11 +127,11 @@ async def download(name, version=None, destdir='.'):
     if not release:
         raise Exception('source package not available on PyPI')
 
-    orig_ext = ext = release['filename'].replace('{}-{}.'.format(name, version), '')
+    orig_ext = ext = release['filename'].replace('{}-{}.'.format(name, download_version), '')
     if ext not in {'tar.gz', 'tar.bz2', 'tar.xz'}:
         ext = 'tar.xz'
 
-    fname = '{}_{}.orig.{}'.format(pkg_name(name), version, ext)
+    fname = '{}_{}.orig.{}'.format(pkg_name(name), download_version, ext)
 
     fpath = join(destdir, fname)
     if exists(fpath):
@@ -146,7 +145,7 @@ async def download(name, version=None, destdir='.'):
 
     if orig_ext != ext:
         cmd = ['mk-origtargz', '--rename', '--compression', 'xz',
-               '--package', pkg_name(details['info']['name']), '--version', version,
+               '--package', pkg_name(details['info']['name']), '--version', download_version,
                '--directory', destdir,
                '--repack', join(destdir, release['filename'])]
         # TODO: add --copyright-file if overriden copyright file is available

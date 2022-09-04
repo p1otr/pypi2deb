@@ -13,8 +13,9 @@ pypi2deb (3.20220722) UNRELEASED; urgency=medium
   * control.tpl: remove python3 Recommends/Suggests
   * github: fix wrong tag download URL
   * dpt: unittests: use py3versions -s (instead of -r)
+  * profiles: introduce dpt-maint, where DPT is set to Maintainer
 
- -- Sandro Tosi <morph@debian.org>  Sun, 28 Aug 2022 18:44:41 -0400
+ -- Sandro Tosi <morph@debian.org>  Sun, 04 Sep 2022 00:35:59 -0400
 
 pypi2deb (3.20220721) unstable; urgency=medium
 

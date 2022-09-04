@@ -125,7 +125,19 @@ async def download(name, version=None, destdir='.'):
         release = None
 
     if not release:
-        raise Exception('source package not available on PyPI')
+        available_files = ", ".join("{} (package type: {})".format(f["filename"], f["packagetype"]) for f in package_urls)
+        other_versions_text = ""
+        if not version and "releases" in details:
+            other_available_versions = [v for v in details["releases"] if v != download_version]
+            if other_available_versions:
+                other_versions_text = " Some other versions found for {}: {}{}.".format(
+                    name,
+                ", ".join(other_available_versions[:5]),
+                " and others" if len(other_available_versions) > 5 else ""
+                )
+            else:
+                other_versions_text = " No other versions for {} found.".format(name)
+        raise Exception('Source package for {} version {} not available on PyPI. Available files: {}.{}'.format(name, download_version, available_files, other_versions_text))
 
     orig_ext = ext = release['filename'].replace('{}-{}.'.format(name, download_version), '')
     if ext not in {'tar.gz', 'tar.bz2', 'tar.xz'}:

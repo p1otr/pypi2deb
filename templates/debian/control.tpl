@@ -9,7 +9,7 @@ Build-Depends: debhelper-compat (= 13),
 {%- for dependency in build_depends|sort %}
                {{dependency}},{% endfor %}
 Standards-Version: 4.6.1.0
-Testsuite: autopkgtest-pkg-python
+Testsuite: autopkgtest-pkg-pybuild
 {%- if homepage %}
 Homepage: {{homepage}}{% endif %}
 {%- if vcs_name and vcs_src %}

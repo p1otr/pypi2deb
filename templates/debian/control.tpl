@@ -8,7 +8,7 @@ Build-Depends: debhelper-compat (= 13),
                dh-python,
 {%- for dependency in build_depends|sort %}
                {{dependency}},{% endfor %}
-Standards-Version: 4.6.1.0
+Standards-Version: 4.6.2.0
 Testsuite: autopkgtest-pkg-pybuild
 {%- if homepage %}
 Homepage: {{homepage}}{% endif %}

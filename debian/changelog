@@ -6,6 +6,9 @@ pypi2deb (3.20220722) UNRELEASED; urgency=medium
       with the package version
   * debian/watch
     - point Homepage to the salsa repo
+  
+  [ Nicolas Dandrimont ]
+  * pypi: use the urls key to find download URLs; Closes: #1015888
 
   [ Agathe Porte ]
   * github: remove trailing `/` in repo url
@@ -15,7 +18,7 @@ pypi2deb (3.20220722) UNRELEASED; urgency=medium
   * dpt: unittests: use py3versions -s (instead of -r)
   * profiles: introduce dpt-maint, where DPT is set to Maintainer
 
- -- Sandro Tosi <morph@debian.org>  Sun, 04 Sep 2022 00:35:59 -0400
+ -- Sandro Tosi <morph@debian.org>  Fri, 27 Jan 2023 02:30:33 -0500
 
 pypi2deb (3.20220721) unstable; urgency=medium
 

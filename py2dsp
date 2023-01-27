@@ -58,9 +58,9 @@ async def main(args):
         shutil.copy(fpath, args.root)
     else:  # download from PyPI
         parsed = parse_filename(args.name)
-        version = parsed.get('version')
+        requested_version = parsed.get('version')
         name = parsed.get('name') or args.name
-        ctx = await get_pypi_info(args.pypi_search if args.pypi_search else name, version)
+        ctx = await get_pypi_info(args.pypi_search if args.pypi_search else name, requested_version)
         ctx = parse_pypi_info(ctx)
         if not ctx:
             log.error('invalid name: %s', args.name)
@@ -68,11 +68,13 @@ async def main(args):
         #name = ctx['name']
         version = ctx['version']
         if args.github:
+            # Use the version parsed from the PyPI API response to download from GitHub
             ctx['github'] = args.github
             log.debug(f"Calling github_download with {name}, {args.github}, {version}, {args.root}")
             fname = await github_download(name, args.github, version=version, destdir=args.root)
         else:
-            fname = await download(name, version=version, destdir=args.root)
+            # Use the requested version to get a richer response from the PyPI API if no version was requested
+            fname = await download(name, version=requested_version, destdir=args.root)
         fpath = join(args.root, fname)
 
     ctx['root'] = args.root

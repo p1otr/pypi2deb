@@ -112,26 +112,38 @@ async def download(name, version=None, destdir='.'):
     if not details:
         raise Exception('cannot get PyPI project details for {}'.format(name))
 
-    if not version:
-        version = details['info']['version']
+    download_version = version or details['info']['version']
 
-    release = details['releases'].get(version, {})
-    if not release:
-        log.debug('missing release of %s %s on PyPI', name, version)
+    package_urls = details['urls']
+    if not package_urls:
+        log.debug('missing release of %s %s on PyPI', name, download_version)
         raise Exception('missing release')
+
     try:
-        release = next((i for i in release if i['python_version'] == 'source'))
+        release = next((i for i in package_urls if i['python_version'] == 'source'))
     except StopIteration:
         release = None
 
     if not release:
-        raise Exception('source package not available on PyPI')
+        available_files = ", ".join("{} (package type: {})".format(f["filename"], f["packagetype"]) for f in package_urls)
+        other_versions_text = ""
+        if not version and "releases" in details:
+            other_available_versions = [v for v in details["releases"] if v != download_version]
+            if other_available_versions:
+                other_versions_text = " Some other versions found for {}: {}{}.".format(
+                    name,
+                ", ".join(other_available_versions[:5]),
+                " and others" if len(other_available_versions) > 5 else ""
+                )
+            else:
+                other_versions_text = " No other versions for {} found.".format(name)
+        raise Exception('Source package for {} version {} not available on PyPI. Available files: {}.{}'.format(name, download_version, available_files, other_versions_text))
 
-    orig_ext = ext = release['filename'].replace('{}-{}.'.format(name, version), '')
+    orig_ext = ext = release['filename'].replace('{}-{}.'.format(name, download_version), '')
     if ext not in {'tar.gz', 'tar.bz2', 'tar.xz'}:
         ext = 'tar.xz'
 
-    fname = '{}_{}.orig.{}'.format(pkg_name(name), version, ext)
+    fname = '{}_{}.orig.{}'.format(pkg_name(name), download_version, ext)
 
     fpath = join(destdir, fname)
     if exists(fpath):
@@ -145,7 +157,7 @@ async def download(name, version=None, destdir='.'):
 
     if orig_ext != ext:
         cmd = ['mk-origtargz', '--rename', '--compression', 'xz',
-               '--package', pkg_name(details['info']['name']), '--version', version,
+               '--package', pkg_name(details['info']['name']), '--version', download_version,
                '--directory', destdir,
                '--repack', join(destdir, release['filename'])]
         # TODO: add --copyright-file if overriden copyright file is available

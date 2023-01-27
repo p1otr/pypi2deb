@@ -17,8 +17,9 @@ pypi2deb (3.20220722) UNRELEASED; urgency=medium
   * github: fix wrong tag download URL
   * dpt: unittests: use py3versions -s (instead of -r)
   * profiles: introduce dpt-maint, where DPT is set to Maintainer
+  * use async/await keywords instead of yield from; Closes: #1029749
 
- -- Sandro Tosi <morph@debian.org>  Fri, 27 Jan 2023 02:30:33 -0500
+ -- Sandro Tosi <morph@debian.org>  Fri, 27 Jan 2023 02:34:30 -0500
 
 pypi2deb (3.20220721) unstable; urgency=medium
 

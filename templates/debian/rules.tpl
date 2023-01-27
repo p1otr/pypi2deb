@@ -1,6 +1,6 @@
 #! /usr/bin/make -f
 
-export PYBUILD_NAME={{src_name}}
+export PYBUILD_NAME={{src_name.replace('python-', '')}}
 {%- for key, value in exports.items() | sort %}
 export {{key}}={{value}}{% endfor %}
 %:

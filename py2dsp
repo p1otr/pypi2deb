@@ -50,7 +50,7 @@ async def main(args):
         parsed = parse_filename(fname)
         version = parsed.get('version')
         name = parsed.get('name') or args.name
-        ctx = await get_pypi_info(name)
+        ctx = await get_pypi_info(args.pypi_search if args.pypi_search else name)
         ctx = parse_pypi_info(ctx)
         ctx['name'], ctx['version'] = name, version
         if args.github:
@@ -60,12 +60,12 @@ async def main(args):
         parsed = parse_filename(args.name)
         requested_version = parsed.get('version')
         name = parsed.get('name') or args.name
-        ctx = await get_pypi_info(name, requested_version)
+        ctx = await get_pypi_info(args.pypi_search if args.pypi_search else name, requested_version)
         ctx = parse_pypi_info(ctx)
         if not ctx:
             log.error('invalid name: %s', args.name)
             exit(1)
-        name = ctx['name']
+        #name = ctx['name']
         version = ctx['version']
         if args.github:
             # Use the version parsed from the PyPI API response to download from GitHub
@@ -129,6 +129,8 @@ if __name__ == '__main__':
                         help='load default values from profile.json file (if available)')
     parser.add_argument('--github', '--gh',  default=None,
                         help='fetch the package from GitHub instead of PyPI')
+    parser.add_argument('--pypi-search',  default=None,
+                        help='specify the PyPI search term instead of the source package name')
 
     changelog = parser.add_argument_group('changelog', 'debian/changelog specific settings')
     changelog.add_argument('--distribution', action='store',

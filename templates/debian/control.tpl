@@ -8,8 +8,8 @@ Build-Depends: debhelper-compat (= 13),
                dh-python,
 {%- for dependency in build_depends|sort %}
                {{dependency}},{% endfor %}
-Standards-Version: 4.6.1.0
-Testsuite: autopkgtest-pkg-python
+Standards-Version: 4.6.2.0
+Testsuite: autopkgtest-pkg-pybuild
 {%- if homepage %}
 Homepage: {{homepage}}{% endif %}
 {%- if vcs_name and vcs_src %}
@@ -19,7 +19,7 @@ Vcs-Browser: {{vcs_browser}}{% endif %}
 Rules-Requires-Root: no
 {%- if 'python3' in interpreters %}
 
-Package: python3-{{src_name}}
+Package: python3-{{src_name.replace('python-', '')}}
 Architecture: {{binary_arch}}
 Depends: ${misc:Depends}, ${python3:Depends},{% if binary_arch == 'any' %} ${shlibs:Depends},{% endif %}
 {%- for dependency in python3_depends %}
@@ -28,7 +28,7 @@ Description: {{short_desc}}
 {{long_desc}}{% endif %}
 {%- if 'pypy' in interpreters %}
 
-Package: pypy-{{src_name}}
+Package: pypy-{{src_name.replace('python-', '')}}
 Architecture: {{binary_arch}}
 Depends: ${misc:Depends}, ${pypy:Depends},{% if binary_arch == 'any' %} ${shlibs:Depends},{% endif %}
 {%- for dependency in pypy2_depends %}
@@ -39,7 +39,7 @@ Description: {{short_desc}}
 {{long_desc}}{% endif %}
 {%- if docs and 'sphinx_dir' in docs %}
 
-Package: python-{{src_name}}-doc
+Package: python-{{src_name.replace('python-', '')}}-doc
 Section: doc
 Architecture: all
 Depends: ${misc:Depends}, ${sphinxdoc:Depends}

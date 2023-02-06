@@ -22,7 +22,6 @@
 # client supporting it, so we're gonna do it the old way
 
 import logging
-import asyncio
 from os.path import join, exists
 
 import aiohttp

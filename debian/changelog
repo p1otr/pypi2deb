@@ -8,7 +8,7 @@ pypi2deb (3.20220722) UNRELEASED; urgency=medium
     - point Homepage to the salsa repo
   * debian/control
     - depends on python3-debian >= 0.1.45, fixes a bug that creates an extra
-      empty line at the end of d/changelog, upsetting lintian; Closes; #1015238
+      empty line at the end of d/changelog, upsetting lintian; Closes: #1015238
   * feat(control.tpl): run autopkgtest via autopkgtest-pkg-pybuild;
     Closes: #1015927
   

@@ -19,7 +19,6 @@
 # THE SOFTWARE.
 
 import logging
-import asyncio
 from os import environ
 from os.path import exists, join
 from xmlrpc.client import ServerProxy

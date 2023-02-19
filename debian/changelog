@@ -1,4 +1,4 @@
-pypi2deb (3.20220722) UNRELEASED; urgency=medium
+pypi2deb (3.20230219) unstable; urgency=medium
 
   [ Sandro Tosi ]
   * debian/rules
@@ -27,7 +27,7 @@ pypi2deb (3.20220722) UNRELEASED; urgency=medium
   * profiles: introduce dpt-maint, where DPT is set to Maintainer
   * use async/await keywords instead of yield from; Closes: #1029749
 
- -- Sandro Tosi <morph@debian.org>  Sun, 19 Feb 2023 15:23:02 -0500
+ -- Sandro Tosi <morph@debian.org>  Sun, 19 Feb 2023 15:28:32 -0500
 
 pypi2deb (3.20220721) unstable; urgency=medium
 

@@ -6,6 +6,8 @@ pypi2deb (3.20220722) UNRELEASED; urgency=medium
       with the package version
   * debian/watch
     - point Homepage to the salsa repo
+  * feat(control.tpl): run autopkgtest via autopkgtest-pkg-pybuild;
+    Closes: #1015927
   
   [ Nicolas Dandrimont ]
   * pypi: use the urls key to find download URLs; Closes: #1015888
@@ -19,7 +21,7 @@ pypi2deb (3.20220722) UNRELEASED; urgency=medium
   * profiles: introduce dpt-maint, where DPT is set to Maintainer
   * use async/await keywords instead of yield from; Closes: #1029749
 
- -- Sandro Tosi <morph@debian.org>  Fri, 27 Jan 2023 02:34:30 -0500
+ -- Sandro Tosi <morph@debian.org>  Sat, 18 Feb 2023 19:29:24 -0500
 
 pypi2deb (3.20220721) unstable; urgency=medium
 

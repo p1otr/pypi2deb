@@ -5,7 +5,7 @@ Maintainer: {{maintainer}}
 {%- if uploaders %}
 Uploaders: {{uploaders}}{% endif %}
 Build-Depends: debhelper-compat (= 13),
-               dh-python,
+               {{pybuild_depends}},
 {%- for dependency in build_depends|sort %}
                {{dependency}},{% endfor %}
 Standards-Version: 4.6.2.0

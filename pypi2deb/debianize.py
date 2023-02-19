@@ -19,6 +19,9 @@
 # THE SOFTWARE.
 
 import logging
+import pathlib
+import tomllib
+
 from configparser import ConfigParser
 from datetime import datetime
 from os import access, chmod, environ, listdir, makedirs, walk, X_OK
@@ -311,7 +314,26 @@ def control(dpath, ctx, env):
                 except Exception as err:
                     log.warn('cannot parse build dependency: %s', err)
 
-    if exists(join(dpath, 'setup.py')):
+    pyproject_file = pathlib.Path(dpath, 'pyproject.toml')
+    if pyproject_file.exists():
+        ctx['pybuild_depends'] = 'pybuild-plugin-pyproject'
+        pyproject_toml = tomllib.loads(pyproject_file.read_text())
+        # static list of build backends and what package to install to use them
+        backends = {
+            'flit': 'flit',
+            'hatchling': 'python3-hatchling',
+            'mesonpy': 'python3-mesonpy',
+            'pdm': 'python3-pdm-pep517',
+            'poetry': 'python3-poetry-core',
+            'setuptools': 'python3-setuptools',
+            'sipbuild': 'python3-sipbuild',
+        }
+        for _backend, _package in backends.items():
+            if _backend in pyproject_toml['build-system']['build-backend']:
+                ctx['pybuild_depends'] += f', {_package}'
+
+    elif exists(join(dpath, 'setup.py')):
+        ctx['pybuild_depends'] = 'dh-python'
         with open(join(dpath, 'setup.py')) as fp:
             for line in fp:
                 if line.startswith('#'):

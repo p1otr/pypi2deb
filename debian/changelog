@@ -6,6 +6,9 @@ pypi2deb (3.20220722) UNRELEASED; urgency=medium
       with the package version
   * debian/watch
     - point Homepage to the salsa repo
+  * debian/control
+    - depends on python3-debian >= 0.1.45, fixes a bug that creates an extra
+      empty line at the end of d/changelog, upsetting lintian; Closes; #1015238
   * feat(control.tpl): run autopkgtest via autopkgtest-pkg-pybuild;
     Closes: #1015927
   
@@ -21,7 +24,7 @@ pypi2deb (3.20220722) UNRELEASED; urgency=medium
   * profiles: introduce dpt-maint, where DPT is set to Maintainer
   * use async/await keywords instead of yield from; Closes: #1029749
 
- -- Sandro Tosi <morph@debian.org>  Sat, 18 Feb 2023 19:29:24 -0500
+ -- Sandro Tosi <morph@debian.org>  Sat, 18 Feb 2023 19:41:24 -0500
 
 pypi2deb (3.20220721) unstable; urgency=medium
 

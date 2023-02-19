@@ -12,6 +12,8 @@ pypi2deb (3.20220722) UNRELEASED; urgency=medium
   * feat(control.tpl): run autopkgtest via autopkgtest-pkg-pybuild;
     Closes: #1015927
   * feat: add support for pyproject.toml; Closes: #1015237
+  * feat(hooks/post): reuse git/gbp functionalities when building the intial 
+    git repo, instead of manual commands
   
   [ Nicolas Dandrimont ]
   * pypi: use the urls key to find download URLs; Closes: #1015888
@@ -25,7 +27,7 @@ pypi2deb (3.20220722) UNRELEASED; urgency=medium
   * profiles: introduce dpt-maint, where DPT is set to Maintainer
   * use async/await keywords instead of yield from; Closes: #1029749
 
- -- Sandro Tosi <morph@debian.org>  Sun, 19 Feb 2023 01:26:31 -0500
+ -- Sandro Tosi <morph@debian.org>  Sun, 19 Feb 2023 15:23:02 -0500
 
 pypi2deb (3.20220721) unstable; urgency=medium
 

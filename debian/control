@@ -26,7 +26,6 @@ Depends: build-essential,
 Recommends: python3-msgpack,
 Suggests: cython,
           cython3,
-          pypy,
           python-all-dev,
           python-nose,
           python-pytest,
@@ -43,7 +42,7 @@ Description: PyPI to Debian converter
  .
  Features:
   * uses PyPI metadata
-  * supports Python 2.X, 3.X and PyPy
+  * supports Python 3.x
   * guesses build dependencies
   * reuses existing Debian package names if already packaged in Debian
   * creates -doc package with Sphinx regenerated documentation

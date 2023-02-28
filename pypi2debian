@@ -230,12 +230,12 @@ if __name__ == '__main__':
     filters.add_argument('--python3', action='store_true',
                          default=environ.get('PYPI2DEB_PYTHON3') == '1',
                          help='limit to Python 3.X packages only')
-    filters.add_argument('--pypy', action='store_true',
-                         default=environ.get('PYPI2DEB_PYPY') == '1',
-                         help='limit to PyPy packages only')
-    filters.add_argument('--no-pypy', action='store_true',
-                         default=environ.get('PYPI2DEB_NO_PYPY') == '1',
-                         help='do not generate pypy- packages')
+    # filters.add_argument('--pypy', action='store_true',
+    #                      default=environ.get('PYPI2DEB_PYPY') == '1',
+    #                      help='limit to PyPy packages only')
+    # filters.add_argument('--no-pypy', action='store_true',
+    #                      default=environ.get('PYPI2DEB_NO_PYPY') == '1',
+    #                      help='do not generate pypy- packages')
 
     commands = parser.add_argument_group('commands', 'override commands')
     commands.add_argument('--build-src-cmd', action='store', metavar='COMMAND',
@@ -253,6 +253,8 @@ if __name__ == '__main__':
                       help='number of binary build jobs to run simultaneously')
 
     args = parser.parse_args()
+    args.pypy = False
+    args.no_pypy = True
 
     if args.verbose:
         logging.getLogger('pypi2deb').setLevel(logging.DEBUG)

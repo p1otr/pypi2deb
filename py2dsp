@@ -80,6 +80,7 @@ async def main(args):
     ctx['root'] = args.root
     src_name = ctx['src_name'] = pkg_name(name)
     ctx['distribution'] = args.distribution
+    ctx['debian_revision'] = args.revision
     if isdir(fpath):
         dpath = fpath
     else:

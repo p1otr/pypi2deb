@@ -316,23 +316,27 @@ def control(dpath, ctx, env):
 
     pyproject_file = pathlib.Path(dpath, 'pyproject.toml')
     if pyproject_file.exists():
-        ctx['pybuild_depends'] = 'pybuild-plugin-pyproject'
         pyproject_toml = tomllib.loads(pyproject_file.read_text())
-        # static list of build backends and what package to install to use them
-        backends = {
-            'flit': 'flit',
-            'hatchling': 'python3-hatchling',
-            'mesonpy': 'python3-mesonpy',
-            'pdm': 'python3-pdm-pep517',
-            'poetry': 'python3-poetry-core',
-            'setuptools': 'python3-setuptools',
-            'sipbuild': 'python3-sipbuild',
-        }
-        for _backend, _package in backends.items():
-            if _backend in pyproject_toml['build-system']['build-backend']:
-                ctx['pybuild_depends'] += f', {_package}'
+        if 'build-system' in pyproject_toml:
+            ctx['pybuild_depends'] = 'pybuild-plugin-pyproject'
+            # static list of build backends and what package to install to use them
+            backends = {
+                'flit': 'flit',
+                'hatchling': 'python3-hatchling',
+                'mesonpy': 'python3-mesonpy',
+                'pdm': 'python3-pdm-pep517',
+                'poetry': 'python3-poetry-core',
+                'setuptools': 'python3-setuptools',
+                'sipbuild': 'python3-sipbuild',
+            }
+            for _backend, _package in backends.items():
+                if _backend in pyproject_toml['build-system']['build-backend']:
+                    ctx['pybuild_depends'] += f', {_package}'
+        else:
+            log.info("Unable to detect a build system via pyproject.toml, falling back to setup.py")
 
-    elif exists(join(dpath, 'setup.py')):
+    # either there's only a setup.py or we couldnt detect a build backend via pyproject.toml
+    if exists(join(dpath, 'setup.py')) and 'pybuild_depends' not in ctx:
         ctx['pybuild_depends'] = 'dh-python'
         with open(join(dpath, 'setup.py')) as fp:
             for line in fp:

@@ -325,6 +325,11 @@ def control(dpath, ctx, env):
     if pyproject_file.exists():
         pyproject_toml = tomllib.loads(pyproject_file.read_text())
         if 'build-system' in pyproject_toml:
+            # https://pip.pypa.io/en/stable/reference/build-system/pyproject-toml/#fallback-behaviour
+            if 'build-backend' not in pyproject_toml['build-system']:
+                log.info("Unable to detect a build backend in pyproject.toml, falling back to setuptools")
+                pyproject_toml['build-system']['build-backend'] = \
+                    "setuptools.build_meta:__legacy__"
             ctx['pybuild_depends'] = 'pybuild-plugin-pyproject'
             # static list of build backends and what package to install to use them
             backends = {

@@ -1,8 +1,12 @@
-pypi2deb (4.20231014) UNRELEASED; urgency=medium
+pypi2deb (3.20240228) UNRELEASED; urgency=medium
 
+  [ Piotr Ożarowski ]
   * dpt: ignore egg-info directories while importing files into git repository
 
- -- Piotr Ożarowski <piotr@debian.org>  Sat, 14 Oct 2023 13:22:39 +0200
+  [ Sandro Tosi ]
+  * remove myself
+
+ -- Sandro Tosi <morph@debian.org>  Wed, 28 Feb 2024 01:28:41 -0500
 
 pypi2deb (3.20230219) unstable; urgency=medium
 

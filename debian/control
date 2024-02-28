@@ -2,7 +2,6 @@ Source: pypi2deb
 Section: python
 Priority: optional
 Maintainer: Piotr Ożarowski <piotr@debian.org>
-Uploaders: Sandro Tosi <morph@debian.org>,
 Build-Depends: debhelper-compat (= 13),
                dh-python,
                python3 (>= 3.4.2),

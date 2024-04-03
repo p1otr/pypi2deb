@@ -73,7 +73,8 @@ def parse_pypi_info(data):
     if 'requires' in info:  # see f.e. qutebrowser
         result['requires'] = info['requires']
 
-    summary = info['summary'].replace('  ', ' ')
+    summary = info.get('summary', 'FIXME').replace('  ', ' ')
+
     unwanted_prefixes = {'a', 'an', 'the', 'is', result['name'].lower()}
     while True:
         if ' ' not in summary:

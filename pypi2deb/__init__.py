@@ -28,7 +28,7 @@ OVERRIDES_PATH = environ.get('PYPI2DEB_OVERRIDES_PATH',
                              abspath(join(dirname(__file__), '..', 'overrides')))
 PROFILES_PATH = environ.get('PYPI2DEB_PROFILES_PATH',
                             abspath(join(dirname(__file__), '..', 'profiles')))
-VERSION = '3.20240228'
+VERSION = '4.20240727'
 # Add path to dh-python's private library
 # (yeah, it's not stable enough to make it public one, fortunatly
 # author of pypi2deb and dh-python know each other ;)

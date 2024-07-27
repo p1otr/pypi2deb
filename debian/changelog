@@ -1,3 +1,23 @@
+pypi2deb (4.20240727) unstable; urgency=medium
+
+  [ Agathe Porte ]
+  * templates: introduce upstream/metadata (DEP-12)
+  * introduce profile dpt-dep14
+
+  [ Ananthu C V ]
+  * fix: no package summary in pypi failing py2dsp
+
+  [ Paul Wise ]
+  * Set the default build-backend to setuptools.build_meta:__legacy__
+
+  [ Piotr Ożarowski ]
+  * DPT profile: set DPT as Maintainer and the ID of the person calling py2dsp
+    as uploader (closes: #1064952)
+  * Allow HTTP_PROXY and other environment variables (closes: #1016023)
+  * Drop nose from suggested packages (closes: #1071981)
+
+ -- Piotr Ożarowski <piotr@debian.org>  Sat, 27 Jul 2024 15:59:51 +0200
+
 pypi2deb (3.20240228) unstable; urgency=medium
 
   [ Piotr Ożarowski ]

@@ -39,7 +39,7 @@ async def get_pypi_info(name, version=None):
         url += '/' + version
     url += '/json'
 
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(trust_env=True) as session:
         try:
             response = await session.get(url)
         except Exception as err:

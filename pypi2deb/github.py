@@ -61,7 +61,7 @@ async def github_download(name, github_url, version=None, destdir='.'):
     if exists(fpath):
         return fname
 
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(trust_env=True) as session:
         log.debug(f"fetching upstream tarball from {download_url}")
         response = await session.get(download_url)
         with open(fpath, 'ba') as fp:

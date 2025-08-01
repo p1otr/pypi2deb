@@ -17,7 +17,6 @@ integrate below tools if they're useful
 
 * licencecheck
 * license-reconcile
-* /usr/lib/cdbs/licensecheck2dep5
 
 debian/control
 --------------

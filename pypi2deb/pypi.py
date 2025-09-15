@@ -149,7 +149,7 @@ async def download(name, version=None, destdir='.'):
     if exists(fpath):
         return fname
 
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(trust_env=True) as session:
         log.debug(f"fetching upstream tarball from {release['url']}")
         response = await session.get(release['url'])
         with open(fpath if ext == orig_ext else join(destdir, release['filename']), 'wb') as fp:

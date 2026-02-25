@@ -28,7 +28,7 @@ from os.path import exists, join
 from shlex import split
 from shutil import rmtree
 from pypi2deb.decorators import cache
-from dhpython.pydist import load, safe_name
+from dhpython.pydist import load, normalize_name
 
 
 FILENAME_RE = re.compile(r'''
@@ -123,7 +123,7 @@ async def execute(command, cwd=None, env=None, log_output=None):
 
 def pkg_name(name):
     names = _load_package_names()
-    name = safe_name(name).lower()
+    name = normalize_name(name).lower()
     if name in names:
         return names[name]
     result = name.lower().replace('-python', '').replace('python-', '')
@@ -135,6 +135,16 @@ def pkg_name(name):
 
 @cache()
 def _load_package_names():
+    """Load PyDist's name → Debian distribution name pairs
+
+    i.e. binary name without "python3-" prefix if it's set
+
+    f.e.:
+      SQLAlchemy → sqlalchemy
+      sphinxcontrib_openapi → sphinxcontrib.openapi
+
+    NOTE: this guesses name from dependency line which is not correct in all cases
+    """
     result = {}
     try:
         data = load('cpython3')
@@ -143,5 +153,8 @@ def _load_package_names():
         data = {}
     else:
         for key, details in data.items():
-            result[key.lower()] = details[0]['dependency'].replace('python3-', '')
+            a = details[0].dependency.replace('python3-', '')
+            if ' ' in a:  # ignore version and other options (alternative deps?)
+                a = a.split()[0]
+            result[key.lower()] = a
     return result

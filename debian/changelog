@@ -1,3 +1,14 @@
+pypi2deb (5.20260225) unstable; urgency=medium
+
+  [ Piotr Ożarowski ]
+  * Drop no longer needed dpt-maint profile 
+  * Use dhpython's normalize_name instead of safe_name (closes: 1126027)
+
+  [ Ermakov Alexander ]
+  * Fix proxy issues
+
+ -- Piotr Ożarowski <piotr@debian.org>  Wed, 25 Feb 2026 15:43:50 +0100
+
 pypi2deb (4.20240727) unstable; urgency=medium
 
   [ Agathe Porte ]

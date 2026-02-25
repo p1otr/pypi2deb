@@ -1,4 +1,4 @@
-# Copyright © 2015-2018 Piotr Ożarowski <piotr@debian.org>
+# Copyright © 2015-2026 Piotr Ożarowski <piotr@debian.org>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ OVERRIDES_PATH = environ.get('PYPI2DEB_OVERRIDES_PATH',
                              abspath(join(dirname(__file__), '..', 'overrides')))
 PROFILES_PATH = environ.get('PYPI2DEB_PROFILES_PATH',
                             abspath(join(dirname(__file__), '..', 'profiles')))
-VERSION = '4.20240727'
+VERSION = '5.20260225'
 # Add path to dh-python's private library
 # (yeah, it's not stable enough to make it public one, fortunatly
 # author of pypi2deb and dh-python know each other ;)
